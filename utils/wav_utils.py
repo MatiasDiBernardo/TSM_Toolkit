@@ -6,6 +6,9 @@ Acá bien podemos trabajar todo como mono o trabajar en stereo pero separados lo
 y después reconstruir la señal estereo. Osea hay que hacer funcionar el código primero para mono
 y la implementación del stereo sale de eso, porque sino hay que trabajar el stereo como otra matrix
 lo cual implicaría tener que refactorizar bastante si se quiere hacer la adaptación.
+
+Aclaración para mi, ahí estoy obligando a definir un fs antes, pero es mejor usar el fs que te tire
+el file que ponga el usuario. Repensar y arreglar eso.
 """
 
 def read_wav(file_path, fs, mono=False):
