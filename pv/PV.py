@@ -24,10 +24,9 @@ def phase_vocoder(x, fs, N, alpha, Hs):
 
 from utils.wav_utils import read_wav, save_wav
 
-
 fs = 22050
 x, _ = read_wav("data\piano_cerca.wav", fs)
 
-rta = phase_vocoder(x, fs, 2048, 1.2, 512)
+rta = phase_vocoder(x, fs, 2048, 0.8, 512)
 
 save_wav(rta, fs, "data\\test_ola.wav")
