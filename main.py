@@ -1,4 +1,3 @@
-import os
 import numpy as np
 
 def main(file_path, type, config):

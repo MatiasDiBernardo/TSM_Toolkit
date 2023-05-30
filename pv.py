@@ -24,11 +24,12 @@ def normalize_phase(phi_diffrenece):
     #    normalize_phase[i] = phi
     
     for i, phi in enumerate(phi_diffrenece):
-        if phi > np.pi:
-            normalize_phase[i] = phi % np.pi
+        max_phase = np.pi
+        if phi > max_phase:
+            normalize_phase[i] = phi % max_phase
             continue
-        if phi < -np.pi:
-            normalize_phase[i] = -1 * ((-1*phi)%np.pi)
+        if phi < -max_phase:
+            normalize_phase[i] = -1 * ((-1*phi)%max_phase)
             continue
         normalize_phase[i] = phi
     return normalize_phase
@@ -60,12 +61,10 @@ def instantanius_frequency(Xk, phi_pred, m, fs, Ha):
     #Adjust frequencies on the current frame
     phi_offset = normalize_phase(phi_real - phi_pred)
     IF_w = w + (phi_offset/delta_t)
-    print("Comparo w y su clon: ", w, IF_w)
 
     return IF_w, phi_pred_next_frame
 
 def phase_vocoder(x, fs, N, alpha, Hs):
-
     if alpha == 1:
         return x
     if alpha < 1:
@@ -90,8 +89,7 @@ def phase_vocoder(x, fs, N, alpha, Hs):
         #Modify frequency frame by shifting the phase.
         IF_w, next_phase_pred = instantanius_frequency(Xk, pred_phase, m, fs, Ha)
         X_mod = np.abs(Xk) * np.exp(1j * 2*np.pi * mod_phase)
-        print("Mag iguales: ", np.allclose(np.abs(Xk), np.abs(X_mod)))
-
+        #print("Mag iguales: ", np.allclose(np.abs(Xk), np.abs(X_mod)))
 
         #Resets values for next iteration
         pred_phase = next_phase_pred
@@ -100,7 +98,7 @@ def phase_vocoder(x, fs, N, alpha, Hs):
         #Transform to time and relocate in the synthesis frame.
         Xm_mod = ifft(X_mod)
         Xm_mod = np.real(Xm_mod)
-        Xm_mod = np.concatenate([Xm_mod[len(Xm_mod)//2:] , Xm_mod[:len(Xm_mod)//2]])  #Porque?
+        #Xm_mod = np.concatenate([Xm_mod[len(Xm_mod)//2:] , Xm_mod[:len(Xm_mod)//2]])  #Porque?
         
         #plt.plot(Xm_mod)
         #plt.show()
@@ -112,22 +110,20 @@ def phase_vocoder(x, fs, N, alpha, Hs):
     return y
 
 def quick_test(path, N, alpha, Hs):
-    
     fs = 22050
     x, _ = read_wav(path, fs)
 
     rta = phase_vocoder(x, fs, N, alpha, Hs)
 
-    save_wav(rta, fs, "data\\quick_test4.wav")
+    save_wav(rta, fs, "data\\quick_test5.wav")
 
 """
 Si uso fs igual 22050 y una ventana de 2048 tengo una longitud de
 93ms. 
 """
-
+test_audio = "data\\audio_003.wav" 
 N = 2048
 Hs = N//4
-alpha = 0.8
+alpha = 2
 
-quick_test("data\\audio_003.wav", N, alpha, Hs)
-
+quick_test(test_audio, N, alpha, Hs)
