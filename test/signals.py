@@ -6,7 +6,7 @@ Este script es el que tiene mas sentido de armarlo como una sola clase pero por 
 vamos a dejarlo así y después vemos. 
 """
 
-def simple_sine(f0, fs, alpha):
+def simple_sine(f0, fs, alpha, time = 1):
     """Generates a base cosine signal and a modifed signal
     according to the stretching factor.
 
@@ -14,12 +14,13 @@ def simple_sine(f0, fs, alpha):
         f0 (float): Main frequency.
         fs (int): Sample rate
         alpha (float): Stretching factor.
+        time (float): Time of the signal in seconds. Default=1.
     Return:
         (np.array): Base case cosine function.
         (np.array): Modify cosine function
     """
-    t_base = np.linspace(0, 1, fs)
-    t_ideal = np.linspace(0, alpha, int(fs*alpha))
+    t_base = np.linspace(0, time, int(fs*time))
+    t_ideal = np.linspace(0, time * alpha, int(fs*alpha*time))
     signal_base = np.cos(2*np.pi*f0*t_base)
     signal_ideal = np.cos(2*np.pi*f0*t_ideal)
 

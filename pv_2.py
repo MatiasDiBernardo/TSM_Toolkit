@@ -2,9 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fftpack import fft, ifft
 from scipy.signal import get_window
+from librosa import stft, istft
 
 from utils.wav_utils import read_wav, save_wav
 from utils.windows import window_normalization
+
 
 def normalize_phase(phi_diffrenece):
     """Normalice the value of difference between
@@ -93,36 +95,21 @@ def TSM_PV(x, fs, N, alpha, Hs):
     cicles = int((len(x) - N)/Ha) + 1  #Amount of frames in the signal.
     pred_phase = 0
     mod_phase = 0
-
-    for m in range(cicles):
-        #Segment frame and transform it to frequency.
-        Xm = x[m * Ha: N + (m * Ha)]
-        Xk = fft(Xm*w)
-        
-        #Modify frequency frame by shifting the phase.
-        IF_w, next_phase_pred = instantaneous_frequency(Xk, pred_phase, m, fs, Ha)
-        X_mod = np.abs(Xk) * np.exp(1j * 2*np.pi * mod_phase)  #Aca es así o np.angle(mod_phase)
-        #print("Mag iguales: ", np.allclose(np.abs(Xk), np.abs(X_mod)))
+    Xf = stft(x, n_fft=N, hop_length=Ha, win_length=N)
+    X_mod = []
+    for i in range(Xf.shape[0]):
+        frame = Xf[i, :]
+        IF_w, next_phase_pred = instantaneous_frequency(frame, pred_phase, i, fs, Ha)
+        frame_mod = np.abs(frame) * np.exp(1j * 2*np.pi * mod_phase)  #Aca es así o np.angle(mod_phase)
+        X_mod.append(frame_mod)
 
         #Resets values for next iteration
         pred_phase = next_phase_pred
         mod_phase = mod_phase + IF_w * Ha/fs
+    
+    X_mod = np.array(X_mod)
+    y = istft(X_mod, hop_length=Hs, win_length=N, n_fft=N)
 
-        #Transform to time and relocate in the synthesis frame.
-        Xm_mod = ifft(X_mod)
-        Xm_mod = np.real(Xm_mod)
-        Xm_mod = np.concatenate([Xm_mod[len(Xm_mod)//2:] , Xm_mod[:len(Xm_mod)//2]])  #Para test
-        #El dar vuelta ahi en audio no cambio tanto pero gráficamente si
-        
-        #plt.plot(Xm_mod)
-        #plt.show()
-
-        y[m * Hs: N + (m * Hs)] += (Xm_mod*w)/w_norm #Supuestamente es dividir w_norm pero no queda
-
-        #plt.plot(y)
-        #plt.show()
-        a = 0
-        
     return y
 
 def quick_test(path, N, alpha, Hs):
@@ -130,7 +117,7 @@ def quick_test(path, N, alpha, Hs):
     x, _ = read_wav(path, fs)
     rta = TSM_PV(x, fs, N, alpha, Hs)
 
-    save_wav(rta, fs, "data\\quick_test2.wav")
+    save_wav(rta, fs, "data\\quick_test3.wav")
 
 """
 Si uso fs igual 22050 y una ventana de 2048 tengo una longitud de

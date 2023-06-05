@@ -10,6 +10,7 @@ def compare_3_results(x1, x2, x3, fs):
         x3 (np.array): Modified signal.
         fs (int): Sample rate.
     """
+    
     fig, ax = plt.subplots(3, 1)
     t1 = np.linspace(0, len(x1)/fs, len(x1))
     ax[0].plot(t1, x1)
