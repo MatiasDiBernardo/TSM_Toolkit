@@ -53,6 +53,7 @@ def instantaneous_frequency(Xk, phi_pred, m, fs, Ha):
     delta_t = t2 - t1  #Same as Ha/fs
     k = np.arange(0,N)
     w = k * fs/N
+    #w = 2 * np.pi * k/N
 
     #Calculate current and next phase
     phi_real = np.angle(Xk)
@@ -100,7 +101,7 @@ def TSM_PV(x, fs, N, alpha, Hs):
     for i in range(Xf.shape[0]):
         frame = Xf[i, :]
         IF_w, next_phase_pred = instantaneous_frequency(frame, pred_phase, i, fs, Ha)
-        frame_mod = np.abs(frame) * np.exp(1j * 2*np.pi * mod_phase)  #Aca es así o np.angle(mod_phase)
+        frame_mod = np.abs(frame) * np.exp(1j * 2*np.pi * mod_phase)
         X_mod.append(frame_mod)
 
         #Resets values for next iteration
@@ -117,13 +118,13 @@ def quick_test(path, N, alpha, Hs):
     x, _ = read_wav(path, fs)
     rta = TSM_PV(x, fs, N, alpha, Hs)
 
-    save_wav(rta, fs, "data\\quick_test3.wav")
+    save_wav(rta, fs, "data\\quick_test8.wav")
 
 """
 Si uso fs igual 22050 y una ventana de 2048 tengo una longitud de
 93ms. 
 """
-test_audio = "data\\audio_003.wav" 
+test_audio = "data\\sunny-original.flac" 
 N = 2048
 Hs = N//4
 alpha = 1.5

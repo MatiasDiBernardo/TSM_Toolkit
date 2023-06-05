@@ -111,7 +111,7 @@ def TSM_PV(x, fs, N, alpha, Hs):
         #Transform to time and relocate in the synthesis frame.
         Xm_mod = ifft(X_mod)
         Xm_mod = np.real(Xm_mod)
-        Xm_mod = np.concatenate([Xm_mod[len(Xm_mod)//2:] , Xm_mod[:len(Xm_mod)//2]])  #Para test
+        #Xm_mod = np.concatenate([Xm_mod[len(Xm_mod)//2:] , Xm_mod[:len(Xm_mod)//2]])  #Para test
         #El dar vuelta ahi en audio no cambio tanto pero gráficamente si
         
         #plt.plot(Xm_mod)
@@ -130,13 +130,13 @@ def quick_test(path, N, alpha, Hs):
     x, _ = read_wav(path, fs)
     rta = TSM_PV(x, fs, N, alpha, Hs)
 
-    save_wav(rta, fs, "data\\quick_test2.wav")
+    save_wav(rta, fs, "data\\quick_test5.wav")
 
 """
 Si uso fs igual 22050 y una ventana de 2048 tengo una longitud de
 93ms. 
 """
-test_audio = "data\\audio_003.wav" 
+test_audio = "data\\piano_cerca.wav" 
 N = 2048
 Hs = N//4
 alpha = 1.5
