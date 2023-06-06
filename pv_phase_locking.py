@@ -154,7 +154,7 @@ def TSM_PV(x, fs, N, alpha, Hs):
 
         #Resets values for next iteration
         pred_phase = next_phase_pred
-        mod_phase = mod_phase + IF_w * Ha/fs
+        mod_phase = mod_phase + IF_w * Hs/fs
 
         #Transform to time and relocate in the synthesis frame.
         Xm_mod = ifft(X_mod)

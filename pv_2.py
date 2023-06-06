@@ -106,7 +106,7 @@ def TSM_PV(x, fs, N, alpha, Hs):
 
         #Resets values for next iteration
         pred_phase = next_phase_pred
-        mod_phase = mod_phase + IF_w * Ha/fs
+        mod_phase = mod_phase + IF_w * Hs/fs
     
     X_mod = np.array(X_mod)
     y = istft(X_mod, hop_length=Hs, win_length=N, n_fft=N)
@@ -118,13 +118,13 @@ def quick_test(path, N, alpha, Hs):
     x, _ = read_wav(path, fs)
     rta = TSM_PV(x, fs, N, alpha, Hs)
 
-    save_wav(rta, fs, "data\\quick_test8.wav")
+    save_wav(rta, fs, "data\\quick_test12.wav")
 
 """
 Si uso fs igual 22050 y una ventana de 2048 tengo una longitud de
 93ms. 
 """
-test_audio = "data\\sunny-original.flac" 
+test_audio = "data\\audio_003.wav" 
 N = 2048
 Hs = N//4
 alpha = 1.5

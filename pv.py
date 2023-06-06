@@ -51,12 +51,15 @@ def instantaneous_frequency(Xk, phi_pred, m, fs, Ha):
     delta_t = t2 - t1  #Same as Ha/fs
     k = np.arange(0,N)
     w = k * fs/N
+    
 
     #Calculate current and next phase
     phi_real = np.angle(Xk)
     phi_pred_next_frame = phi_real + w*delta_t
 
     #Adjust frequencies on the current frame
+    phi_offset = phi_real - phi_pred
+    #phi_offset  = phi_offset - fs* np.round(phi_pred/fs)
     phi_offset = normalize_phase(phi_real - phi_pred)
     IF_w = w + (phi_offset/delta_t)
 
@@ -101,12 +104,12 @@ def TSM_PV(x, fs, N, alpha, Hs):
         
         #Modify frequency frame by shifting the phase.
         IF_w, next_phase_pred = instantaneous_frequency(Xk, pred_phase, m, fs, Ha)
-        X_mod = np.abs(Xk) * np.exp(1j * 2*np.pi * mod_phase)  #Aca es así o np.angle(mod_phase)
+        X_mod = np.abs(Xk) * np.exp(1j * 2*np.pi * mod_phase)  #Aca el abs creo que no cambia
         #print("Mag iguales: ", np.allclose(np.abs(Xk), np.abs(X_mod)))
 
         #Resets values for next iteration
         pred_phase = next_phase_pred
-        mod_phase = mod_phase + IF_w * Ha/fs
+        mod_phase = mod_phase + IF_w * Hs/fs
 
         #Transform to time and relocate in the synthesis frame.
         Xm_mod = ifft(X_mod)
@@ -130,13 +133,13 @@ def quick_test(path, N, alpha, Hs):
     x, _ = read_wav(path, fs)
     rta = TSM_PV(x, fs, N, alpha, Hs)
 
-    save_wav(rta, fs, "data\\quick_test5.wav")
+    save_wav(rta, fs, "data\\quick_test11.wav")
 
 """
 Si uso fs igual 22050 y una ventana de 2048 tengo una longitud de
 93ms. 
 """
-test_audio = "data\\piano_cerca.wav" 
+test_audio = "data\\audio_003.wav" 
 N = 2048
 Hs = N//4
 alpha = 1.5
