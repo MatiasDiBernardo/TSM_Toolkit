@@ -31,6 +31,38 @@ def normalize_phase(phi_diffrenece):
 
     return normalize_phase 
 
+def phase_locking(w, phi_offset, peaks, delta_t):
+
+    current_peak = peaks[0]  #Tracks current peak value
+    index_peak = 0  #Tracks peak index
+    IF_w = np.zeros(len(w))
+    
+    for i in range(len(w)):
+        if i > current_peak:  #Updates if index is grater than current peak
+            index_peak += 1
+            if index_peak < len(peaks):  #Check for last peak
+                current_peak = peaks[index_peak]
+            
+        if index_peak >= 1 and index_peak < len(peaks):  #Avoids checking first and last peak
+            #Compares distance between index and closest peaks
+            dif_before = i - peaks[index_peak - 1]
+            dif_after = peaks[index_peak] - i
+            
+            if dif_before <= dif_after:  #Belongs to previous peak
+                w_update = w[peaks[index_peak - 1]] + (phi_offset[index_peak - 1]/delta_t)
+            else:  #Uses current peak
+                w_update = w[peaks[index_peak]] + (phi_offset[index_peak]/delta_t)
+                
+        if index_peak == 0:
+            w_update = w[peaks[index_peak]] + (phi_offset[index_peak]/delta_t)
+        
+        if index_peak == len(peaks):
+            w_update = w[peaks[index_peak - 1]] + (phi_offset[index_peak - 1]/delta_t)
+            
+        IF_w[i] = w_update
+
+    return IF_w
+
 def instantaneous_frequency(Xk, phi_pred, m, fs, Ha, peaks):
     """Calculates the instantaneous frequency of a current frequency frame. 
     And also predicts the phase for the next frame.
@@ -62,42 +94,16 @@ def instantaneous_frequency(Xk, phi_pred, m, fs, Ha, peaks):
 
     #Adjust frequencies on the current frame
     phi_offset = normalize_phase(phi_real - phi_pred)
-    
-    #Comentario, todo el phase locking tiene que ir en otra función y que se llamé solo
-    #si la len de peaks es mayor a 0.
-    #Posible re factor para que si estos pasa llamar de nuevo a peaks detection pero con otros
+
+    #Phase locking
+    if len(peaks) > 0:
+        IF_w = phase_locking(w, phi_offset, peaks, delta_t)
+    else:
+        IF_w = w + (phi_offset/delta_t)
+        
+    #Posible re factor para que si peaks = 0, llamar de nuevo a peaks detection pero con otros
     #parámetros. Implementación como clase se vuelve mas relevante. 
     
-    #Phase locking
-    current_peak = peaks[0]  #Tracks current peak value
-    index_peak = 0  #Tracks peak index
-    IF_w = np.zeros(len(w))
-    
-    for i in range(len(w)):
-        if i > current_peak:  #Updates if index is grater than current peak
-            index_peak += 1
-            if index_peak < len(peaks):  #Check for last peak
-                current_peak = peaks[index_peak]
-            
-        if index_peak >= 1 and index_peak < len(peaks):  #Avoids checking first peak and last peak
-            #Compares distance between index and closest peaks
-            dif_before = i - peaks[index_peak - 1]
-            dif_after = peaks[index_peak] - i
-            
-            if dif_before <= dif_after:  #Belongs to previous peak
-                w_update = w[peaks[index_peak - 1]] + (phi_offset[index_peak - 1]/delta_t)
-            else:  #Uses current peak
-                w_update = w[peaks[index_peak]] + (phi_offset[index_peak]/delta_t)
-                
-        if index_peak == 0:
-            w_update = w[peaks[index_peak]] + (phi_offset[index_peak]/delta_t)
-        
-        if index_peak == len(peaks):
-            w_update = w[peaks[index_peak - 1]] + (phi_offset[index_peak - 1]/delta_t)
-            
-            
-        IF_w[i] = w_update 
-
     return IF_w, phi_pred_next_frame
 
 def TSM_PV(x, fs, N, alpha, Hs):
@@ -139,37 +145,27 @@ def TSM_PV(x, fs, N, alpha, Hs):
         mag = np.abs(Xk)
         mean = np.mean(mag)
 
+        #Tengo que definir que parámetros van mejor
         peaks, _ = find_peaks(np.abs(Xk), height=mean, width=2)
         #plt.plot(peaks, mag[peaks], "x")
         #plt.plot(np.ones(len(mag)) * mean, "--", color="gray")
         #plt.plot(mag)
         #plt.show()
         
-        #print("Estos son los picos que encontro: ", peaks)
-        
         #Modify frequency frame by shifting the phase.
         IF_w, next_phase_pred = instantaneous_frequency(Xk, pred_phase, m, fs, Ha, peaks)
-        X_mod = np.abs(Xk) * np.exp(1j * 2*np.pi * mod_phase)  #Aca es así o np.angle(mod_phase)
-        #print("Mag iguales: ", np.allclose(np.abs(Xk), np.abs(X_mod)))
 
         #Resets values for next iteration
         pred_phase = next_phase_pred
         mod_phase = mod_phase + IF_w * Hs/fs
+        X_mod = np.abs(Xk) * np.exp(1j * 2*np.pi * mod_phase)  #Aca es así o np.angle(mod_phase)
 
         #Transform to time and relocate in the synthesis frame.
         Xm_mod = ifft(X_mod)
         Xm_mod = np.real(Xm_mod)
         #Xm_mod = np.concatenate([Xm_mod[len(Xm_mod)//2:] , Xm_mod[:len(Xm_mod)//2]])  #Para test
-        #El dar vuelta ahi en audio no cambio tanto pero gráficamente si
-        
-        #plt.plot(Xm_mod)
-        #plt.show()
 
         y[m * Hs: N + (m * Hs)] += (Xm_mod*w)*w_norm #Supuestamente es dividir w_norm pero no queda
-
-        #plt.plot(y)
-        #plt.show()
-        a = 0
         
     return y
 
@@ -178,13 +174,13 @@ def quick_test(path, N, alpha, Hs):
     x, _ = read_wav(path, fs)
     rta = TSM_PV(x, fs, N, alpha, Hs)
 
-    save_wav(rta, fs, "data\\quick_test7.wav")
+    save_wav(rta, fs, "data\\quick_test4.wav")
 
 """
 Si uso fs igual 22050 y una ventana de 2048 tengo una longitud de
 93ms. 
 """
-test_audio = "data\\sunny-original.flac" 
+test_audio = "data\\audio_003.wav" 
 N = 2048
 Hs = N//4
 alpha = 1.5
