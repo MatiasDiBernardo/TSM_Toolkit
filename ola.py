@@ -47,7 +47,7 @@ def TSM_OLA(x, N, alpha, Hs):
     return y 
 
 
-#funcion de quick test
+#funcion de quick test, credits: diber
 def quick_test_OLA(path, N,fs, alpha, Hs,savename):
     
     x, _ = read_wav(path, fs)
