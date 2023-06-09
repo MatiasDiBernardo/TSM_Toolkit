@@ -76,7 +76,7 @@ def HPS(x, fs, N, M):
     Xp = istft(Xp, n_fft = N)
     Xh = istft(Xh, n_fft = N)
 
-    return X, Xp, Xh, x1
+    return X, xp, xh, x1
 
 
 
