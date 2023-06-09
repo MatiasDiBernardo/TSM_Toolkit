@@ -1,4 +1,6 @@
 #Aca va la implementación del HPS
+
+
 # %%
 import numpy as np
 import matplotlib.pyplot as plt
@@ -79,7 +81,7 @@ def HPS(x, fs, N, M):
 
 
 
-N = 512
+N = 4096
 X , xp, xh, x1 = HPS(x ,fs ,N , 17 )
 y = abs(X)
 
@@ -90,7 +92,6 @@ plt.ylim([0, 2000])
 plt.colorbar()
 plt.grid()
 plt.show()
-
 
 
 plt.figure() #Espectro mascara percusiva
