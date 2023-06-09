@@ -1,7 +1,6 @@
-#Aca va la implementación del HPS
-
 
 # %%
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fftpack import fft, ifft
@@ -73,8 +72,8 @@ def HPS(x, fs, N, M):
     Xp = X * Mp
     Xh = X * Mh
 
-    Xp = istft(Xp, n_fft = N)
-    Xh = istft(Xh, n_fft = N)
+    xp = istft(Xp, n_fft = N)
+    xh = istft(Xh, n_fft = N)
 
     return X, xp, xh, x1
 
@@ -119,6 +118,5 @@ plt.plot(n, abs(xp))
 
 plt.show()
 
- # %%
 
-
+# %%
