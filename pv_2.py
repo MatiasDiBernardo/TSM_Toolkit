@@ -123,9 +123,10 @@ def quick_test(path, N, alpha, Hs):
 Si uso fs igual 22050 y una ventana de 2048 tengo una longitud de
 93ms. 
 """
-test_audio = "data\\audio_003.wav" 
+test_audio = "data\SingingVoice_ORIG.wav" 
+#test_audio = "data\\audio_003.wav" 
 N = 2048
 Hs = N//4
-alpha = 1.5
+alpha = 0.5
 
 quick_test(test_audio, N, alpha, Hs)

@@ -106,7 +106,7 @@ def instantaneous_frequency(Xk, phi_pred, m, fs, Ha, peaks):
     
     return IF_w, phi_pred_next_frame
 
-def TSM_PV(x, fs, N, alpha, Hs):
+def TSM_PV_phase_locking(x, fs, N, alpha, Hs):
     """Alpies TSM procedure base on phase vocoder.
 
     Args:
@@ -165,14 +165,14 @@ def TSM_PV(x, fs, N, alpha, Hs):
         Xm_mod = np.real(Xm_mod)
         #Xm_mod = np.concatenate([Xm_mod[len(Xm_mod)//2:] , Xm_mod[:len(Xm_mod)//2]])  #Para test
 
-        y[m * Hs: N + (m * Hs)] += (Xm_mod*w)*w_norm #Supuestamente es dividir w_norm pero no queda
+        y[m * Hs: N + (m * Hs)] += (Xm_mod*w)/w_norm #Supuestamente es dividir w_norm pero no queda
         
     return y
 
 def quick_test(path, N, alpha, Hs):
     fs = 22050
     x, _ = read_wav(path, fs)
-    rta = TSM_PV(x, fs, N, alpha, Hs)
+    rta = TSM_PV_phase_locking(x, fs, N, alpha, Hs)
 
     save_wav(rta, fs, "data\\quick_test4.wav")
 
@@ -180,9 +180,11 @@ def quick_test(path, N, alpha, Hs):
 Si uso fs igual 22050 y una ventana de 2048 tengo una longitud de
 93ms. 
 """
-test_audio = "data\\audio_003.wav" 
+
+test_audio = "data\SingingVoice_ORIG.wav" 
+#test_audio = "data\\audio_003.wav" 
 N = 2048
 Hs = N//4
-alpha = 1.5
+alpha = 0.5
 
 quick_test(test_audio, N, alpha, Hs)

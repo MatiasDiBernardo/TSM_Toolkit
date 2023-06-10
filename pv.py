@@ -110,9 +110,12 @@ def TSM_PV(x, fs, N, alpha, Hs):
         #Transform to time and relocate in the synthesis frame.
         Xm_mod = ifft(X_mod)
         Xm_mod = np.real(Xm_mod)
-        #Xm_mod = np.concatenate([Xm_mod[len(Xm_mod)//2:] , Xm_mod[:len(Xm_mod)//2]])  #Para test
-
-        y[m * Hs: N + (m * Hs)] += (Xm_mod*w)*w_norm #Supuestamente es dividir w_norm pero no queda
+        Xm_mod = np.concatenate([Xm_mod[len(Xm_mod)//2:] , Xm_mod[:len(Xm_mod)//2]])  #Para test
+        #plt.plot(Xm)
+        #plt.plot(Xm_mod)
+        #plt.show()
+        
+        y[m * Hs: N + (m * Hs)] += (Xm_mod*w)/w_norm #Supuestamente es dividir w_norm pero no queda
         
     return y
 
@@ -127,9 +130,9 @@ def quick_test(path, N, alpha, Hs):
 Si uso fs igual 22050 y una ventana de 2048 tengo una longitud de
 93ms. 
 """
-test_audio = "data\\audio_003.wav" 
+test_audio = "data\SingingVoice_ORIG.wav" 
 N = 2048
 Hs = N//4
-alpha = 1.5
+alpha = 0.5
 
-quick_test(test_audio, N, alpha, Hs)
+#quick_test(test_audio, N, alpha, Hs)

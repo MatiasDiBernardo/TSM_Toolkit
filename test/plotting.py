@@ -29,4 +29,3 @@ def compare_3_results(x1, x2, x3, fs):
 
     plt.show()
     
-
