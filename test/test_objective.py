@@ -1,4 +1,5 @@
 import numpy as np
+from pytsmod import phase_vocoder
 
 from utils.wav_utils import read_wav, save_wav
 import plotting
@@ -26,9 +27,10 @@ def basic_test(x_base, x_ideal, algo, plot, audio_save, fs, N, Hs, alpha):
         (float): Normalize value from 0 to 1 with the effectiveness of the algorithm.
     """
     if algo == "PV":
-        x_result = pv.TSM_PV(x_base, fs, N, alpha, Hs)
+        #x_result = pv.TSM_PV(x_base, fs, N, alpha, Hs)
         #x_result = pv_2.TSM_PV(x_base, fs, N, alpha, Hs)
-        #x_result = pv_3.TSM_PV(x_base, fs, N, alpha, Hs)
+        x_result = pv_3.TSM_PV(x_base, fs, N, alpha, Hs)
+        x_ext = phase_vocoder(x_base, alpha, "hann", N, Hs)
     
     if algo == "PV_FL":
         x_result = pv_phase_locking.TSM_PV_phase_locking(x_base, fs, N, alpha, Hs)
@@ -40,7 +42,7 @@ def basic_test(x_base, x_ideal, algo, plot, audio_save, fs, N, Hs, alpha):
         x_result = None
     
     if plot:
-        plotting.compare_3_results(x_base, x_ideal, x_result, fs)
+        plotting.compare_3_results(x_ext, x_ideal, x_result, fs)
     
     if audio_save:
         save_wav(x_base, fs, f"data\\test_base_{algo}.wav")
@@ -50,7 +52,7 @@ def basic_test(x_base, x_ideal, algo, plot, audio_save, fs, N, Hs, alpha):
     if alpha < 1:
         x_ideal = np.concatenate([x_ideal, np.zeros(N)])
     
-    similarity = 1/N * np.sqrt(x_ideal**2 + x_result**2)
+    similarity = 1/len(x_ideal) * np.sqrt(x_ideal**2 + x_result**2)
     
     return np.sum(similarity)
 
@@ -73,5 +75,5 @@ def test_freq_change_signal(algo, plot, audio_save, fs, N, Hs, alpha):
 #Test PV
 cfg1 = {"N": 2048, "Hs": 2048//4, "alpha": 1.5, "fs": 22050}
 
-rta = test_freq_change_signal("PV", plot=True, audio_save=False, **cfg1) 
+rta = test_ideal_signal("PV", plot=True, audio_save=True, **cfg1) 
 print("Test: ", rta)

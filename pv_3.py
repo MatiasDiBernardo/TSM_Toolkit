@@ -75,7 +75,7 @@ def TSM_PV(x, fs, N, alpha, Hs):
         IF_w = omega + (phi_error/delta_t)
 
         #Modify phase and adjust spectrum
-        phi_mod = last_phase + IF_w * Hs/fs
+        phi_mod = last_phase + (IF_w * Hs/fs)
         X_mod = np.abs(Xk) * np.exp(1j * 2*np.pi * phi_mod)  #Uses current phi mod for update
 
         #Rest phase value
@@ -86,7 +86,7 @@ def TSM_PV(x, fs, N, alpha, Hs):
         Xm_mod = np.real(Xm_mod)
         #Xm_mod = np.concatenate([Xm_mod[len(Xm_mod)//2:] , Xm_mod[:len(Xm_mod)//2]])  #Para test
 
-        y[m * Hs: N + (m * Hs)] += (Xm_mod*w) #Supuestamente es dividir w_norm pero no queda
+        y[m * Hs: N + (m * Hs)] += (Xm_mod*w)/(w_norm**2) #Supuestamente es dividir w_norm**2 pero no queda
         
     return y
 
@@ -108,4 +108,4 @@ N = 2048
 Hs = N//4
 alpha = 0.5
 
-quick_test(test_audio, N, alpha, Hs)
+#quick_test(test_audio, N, alpha, Hs)
