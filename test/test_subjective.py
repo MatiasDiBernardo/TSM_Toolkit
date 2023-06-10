@@ -9,7 +9,7 @@ import ola
 def compare_algotithms(path_audio, plot, save_audios, cfg_pv, cfg_ola):
     fs = 22050
     test, _ = read_wav(path_audio, fs)
-    pv_mod = pv.TSM_PV(test, **cfg_pv)
+    pv_mod = pv.TSM_PV(test, **cfg_pv) 
     pv_fl_mod = pv_phase_locking.TSM_PV_phase_locking(test, **cfg_pv)
     ola_mod =  ola.TSM_OLA(test, **cfg_ola)
     
@@ -33,3 +33,4 @@ cfg_pv = {"N": 2048, "Hs": 2048//4, "alpha": alpha, "fs": fs}
 cfg_ola = {"N": 1024, "Hs": 1024//2, "alpha": alpha}
 
 compare_algotithms(path_audio, plot=True, save_audios=True, cfg_pv=cfg_pv, cfg_ola=cfg_ola)
+
