@@ -47,18 +47,33 @@ def TSM_OLA(x, N, alpha, Hs):
     return y 
 
 
-#funcion de quick test, credits: diber
+#funcion de quick test OLA
 def quick_test_OLA(path, N,fs, alpha, Hs,savename):
+    '''
+    Computes the TSM with the OLA procedure to a given signal audio file.
+
+    Parameters:
+
+    path: directory of the audio sample
+    N (int): Number of samples for the window
+    fs (int): Sample rate
+    alpha (float): Stretching factor.
+    Hs (int): Synthesis hopsize length.
+    savename (boolean): Optional. Necessary for saving the file.
+    '''
     
     x, _ = read_wav(path, fs)
     x_out = TSM_OLA(x,N,alpha,Hs)
-    nameout = "audios/"+savename+".wav"
-    save_wav(x_out, fs, nameout)
+
+    if savename:
+        nameout = "audios_mod/prueba_ola.wav"
+        save_wav(x_out, fs, nameout)
+
+    return x, x_out 
 
 '''
 Observacion:
 tamaño de ventana en segundos: w_size = N/fs
-
 Para fs = 44100
 
 algunos casos:
@@ -73,11 +88,11 @@ Si N = 8192 -> w_size = 184 ms
 '''
 PRUEBA1 - signal: synth - fs=44100 - N=4096 - alpha=1.5 - Hs=N/2
 '''
-quick_test_OLA('audios/synth.wav',4096,44100,1.5,4096//2,'synth_prueba1')
+#quick_test_OLA('audios/synth.wav',4096,44100,1.5,4096//2,'synth_prueba1')
 
 '''
 PRUEBA2 - signal: sharp_bells - fs=44100 - N=4096 - alpha=1.5 - Hs=N/2
 '''
-quick_test_OLA('audios/sharp_bells.wav',4096,44100,1.5,4096//2,'bells_prueba1')
+#quick_test_OLA('audios/sharp_bells.wav',4096,44100,1.5,4096//2,'bells_prueba1')
 
 
