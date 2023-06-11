@@ -51,7 +51,8 @@ def basic_plot_comparison(x1,x2,fs):
     ax[1].set_ylabel("Amplitude")
     ax[1].set_xlabel("Time")
 
-    return 
+    plt.show()
+    
 
 
 

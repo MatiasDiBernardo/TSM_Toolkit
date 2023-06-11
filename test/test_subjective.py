@@ -4,23 +4,20 @@ from pytsmod import phase_vocoder
 from utils.wav_utils import read_wav, save_wav
 import plotting
 import pv
+import pv_2
 import pv_phase_locking
 import ola
 
 def compare_algotithms(path_audio, plot, save_audios, cfg_pv, cfg_ola):
     fs = 22050
     test, _ = read_wav(path_audio, fs)
-<<<<<<< HEAD
-    pv_mod = pv.TSM_PV(test, **cfg_pv)
+    pv_mod = pv_2.TSM_PV(test, **cfg_pv)
     pv_ref = phase_vocoder(test, s=cfg_pv["alpha"], win_type="hann", win_size=cfg_pv["N"], syn_hop_size=cfg_pv["Hs"])
-=======
-    pv_mod = pv.TSM_PV(test, **cfg_pv) 
->>>>>>> bd1bd734a4e40840fbb36169cd7cbf8c7a2656d0
     pv_fl_mod = pv_phase_locking.TSM_PV_phase_locking(test, **cfg_pv)
     ola_mod =  ola.TSM_OLA(test, **cfg_ola)
     
     if plot:
-        plotting.compare_3_results(pv_fl_mod, pv_mod, ola_mod, fs)
+        plotting.compare_3_results(test, pv_mod, pv_ref, fs)
     
     if save_audios:
         name = path_audio.split(".")[0]

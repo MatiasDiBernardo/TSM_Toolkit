@@ -16,7 +16,7 @@ def normalize_phase(phi_diffrenece):
         (np.array): Normalize phase array.
     """
     normalize_phase = np.zeros(len(phi_diffrenece))
-    max_phase = np.pi
+    max_phase = 0.5
     
     for i, phi in enumerate(phi_diffrenece):
         if phi > max_phase:
@@ -61,6 +61,9 @@ def TSM_PV(x, fs, N, alpha, Hs):
     cicles = int((len(x) - N)/Ha)  #Amount of frames in the signal.
     last_phase = np.angle(fft(x[:N]))
     omega = np.arange(0,N)*fs/N
+    k = np.arange(N)
+    #omega = 2*np.pi * k /N
+    correction = 2*np.pi * k *Ha/N
     delta_t = Ha/fs
 
     for m in range(1, cicles):
@@ -74,8 +77,12 @@ def TSM_PV(x, fs, N, alpha, Hs):
         phi_error = normalize_phase(phi_error)
         IF_w = omega + (phi_error/delta_t)
 
+        #phi_error = current_phase - last_phase - correction
+        #phi_error = normalize_phase(phi_error)
+        #IF_w = 2*np.pi*k/N + (phi_error/Ha)
+
         #Modify phase and adjust spectrum
-        phi_mod = last_phase + (IF_w * Hs/fs)
+        phi_mod = last_phase + (IF_w * Hs)
         X_mod = np.abs(Xk) * np.exp(1j * 2*np.pi * phi_mod)  #Uses current phi mod for update
 
         #Rest phase value
@@ -86,7 +93,7 @@ def TSM_PV(x, fs, N, alpha, Hs):
         Xm_mod = np.real(Xm_mod)
         #Xm_mod = np.concatenate([Xm_mod[len(Xm_mod)//2:] , Xm_mod[:len(Xm_mod)//2]])  #Para test
 
-        y[m * Hs: N + (m * Hs)] += (Xm_mod*w)/(w_norm**2) #Supuestamente es dividir w_norm**2 pero no queda
+        y[m * Hs: N + (m * Hs)] += (Xm_mod*w) #Supuestamente es dividir w_norm**2 pero no queda
         
     return y
 
