@@ -47,30 +47,6 @@ def TSM_OLA(x, N, alpha, Hs):
     return y 
 
 
-#funcion de quick test OLA
-def quick_test_OLA(path, N,fs, alpha, Hs,savename):
-    '''
-    Computes the TSM with the OLA procedure to a given signal audio file.
-
-    Parameters:
-
-    path: directory of the audio sample
-    N (int): Number of samples for the window
-    fs (int): Sample rate
-    alpha (float): Stretching factor.
-    Hs (int): Synthesis hopsize length.
-    savename (boolean): Optional. Necessary for saving the file.
-    '''
-    
-    x, _ = read_wav(path, fs)
-    x_out = TSM_OLA(x,N,alpha,Hs)
-
-    if savename:
-        nameout = "audios_mod/prueba_ola.wav"
-        save_wav(x_out, fs, nameout)
-
-    return x, x_out 
-
 '''
 Observacion:
 tamaño de ventana en segundos: w_size = N/fs

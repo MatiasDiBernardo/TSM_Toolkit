@@ -40,16 +40,25 @@ def basic_plot_comparison(x1,x2,fs):
     fig, ax = plt.subplots(2, 1)
 
     t1 = np.linspace(0, len(x1)/fs, len(x1))
-    ax[0].set_title("Señal original")
+    ax[0].set_title("Señal original vs Señal con TSM")
     ax[0].plot(t1, x1)
     ax[0].set_ylabel("Amplitude")
     ax[0].set_xlabel("Time")
+    if len(x1)/fs > len(x2)/fs:
+        ax[0].setxlim([0,len(x1)/fs])
+    else:
+        ax[0].setxlim([0,len(x2)/fs])
 
     t2 = np.linspace(0, len(x2)/fs, len(x2))
-    ax[0].set_title("Señal modificada con el TSM aplicado")
     ax[1].plot(t2, x2)
     ax[1].set_ylabel("Amplitude")
     ax[1].set_xlabel("Time")
+    if len(x1)/fs > len(x2)/fs:
+        ax[1].setxlim([0,len(x1)/fs])
+    else:
+        ax[1].setxlim([0,len(x2)/fs])
+
+    plt.show()
 
     return 
 
