@@ -3,3 +3,4 @@
 /audios_mod
 __pycache__
 .env
+.DS_Store
