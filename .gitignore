@@ -1,4 +1,5 @@
 /data
 /audios
+/audios_mod
 __pycache__
 .env

@@ -60,7 +60,8 @@ def basic_plot_comparison(x1,x2,fs):
 
     plt.show()
 
-    return 
+    plt.show()
+    
 
 
 
