@@ -42,7 +42,8 @@ def basic_test(x_base, x_ideal, algo, plot, audio_save, fs, N, Hs, alpha):
         x_result = None
     
     if plot:
-        plotting.compare_3_results(x_ideal, x_ext, x_result, fs)
+        plotting.compare_results(fs, x_base, x_ideal, x_result, x_ext)
+        #plotting.compare_3_results(x_base, x_ideal, x_result, fs)
     
     if audio_save:
         save_wav(x_base, fs, f"data\\test_base_{algo}.wav")
@@ -51,6 +52,9 @@ def basic_test(x_base, x_ideal, algo, plot, audio_save, fs, N, Hs, alpha):
         
     if alpha < 1:
         x_ideal = np.concatenate([x_ideal, np.zeros(N)])
+    
+    ##Mean absolute error
+    #similarity = np.abs(x_ideal - x_result)/len(x_ideal)
     
     ##Euclidean distance
     #similarity = 1/len(x_ideal) * np.sum((x_ideal - x_result)**2)
@@ -61,7 +65,6 @@ def basic_test(x_base, x_ideal, algo, plot, audio_save, fs, N, Hs, alpha):
     ##Varational diference
     #similarity = 1/2 * (np.std(x_ideal - x_result)/(np.std(x_ideal) + np.std(x_result)))
     
-
 def test_ideal_signal(algo, plot, audio_save, fs, N, Hs, alpha):
     f0 = 500
     time = 1
@@ -81,5 +84,8 @@ def test_freq_change_signal(algo, plot, audio_save, fs, N, Hs, alpha):
 #Test PV
 cfg1 = {"N": 2048, "Hs": 2048//4, "alpha": 1.5, "fs": 22050}
 
-test_ideal_signal("PV", plot=True, audio_save=True, **cfg1) 
+#OLA
+cfg2 = {"N": 1024, "Hs": 1024//2, "alpha": 0.7, "fs": 22050}
+
+test_ideal_signal("PV", plot=True, audio_save=False, **cfg1)
 

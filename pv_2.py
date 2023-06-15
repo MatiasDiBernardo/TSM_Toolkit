@@ -17,7 +17,7 @@ def normalize_phase(phi_diffrenece):
         (np.array): Normalize phase array.
     """
     normalize_phase = np.zeros(len(phi_diffrenece))
-    max_phase = np.pi
+    max_phase = 0.5
     
     for i, phi in enumerate(phi_diffrenece):
         if phi > max_phase:
@@ -30,39 +30,47 @@ def normalize_phase(phi_diffrenece):
 
     return normalize_phase 
 
-def instantaneous_frequency(Xk, phi_pred, m, fs, Ha):
-    """Calculates the instantaneous frequency of a current frequency frame. 
-    And also predicts the phase for the next frame.
+def TSM_PV_copy(x, fs, N ,alpha, Hs):
 
-    Args:
-        Xk (np.array): Frequency spectrum in one frame time.
-        phi_pred (float): Predicted phase of the current frame.
-        m (int): Frame index.
-        Fs (int): Sample rate.
-        Ha (int): Analisis hop size.
-    Returns:
-        (np.array): Instanteneous frequency.
-        (np.array): Predicted phase for next frame.
+    #Window election
+    win_type = "hann"
+    w = get_window(win_type, N)
+
+    #Inicialization
+    Ha = int(Hs/alpha)
+    X = stft(x, n_fft=N, hop_length=Ha, win_length=N)
+    Y = np.zeros(X.shape, dtype=complex)
+    Y[:, 0] = X[:, 0]  # phase initialization
+
+    k = np.arange(N / 2 + 1)  #Stft uses only postive side
+    omega = 2 * np.pi * k / N  #From 0 to pi
+
+    for i in range(1, X.shape[1]):
+        dphi = omega * alpha
+
+        #plt.plot(np.real(ifft(X[:,i])))
+        ph_curr = np.angle(X[:, i])
+        ph_last = np.angle(X[:, i - 1])
+
+        hpi = (ph_curr - ph_last) - dphi  #Dif phi vs phi pred
+        hpi = hpi - 2 * np.pi * np.round(hpi / (2 * np.pi))  #Unwrap phase entre -pi y pi
+
+        ipa_sample = (omega + hpi / alpha)  #IF
+
+        ipa_hop = ipa_sample * Hs
+
+        ph_syn = np.angle(Y[:, i - 1])
+        theta = ph_syn + ipa_hop - ph_curr
+        phasor = np.exp(1j * theta)
+
+        Y[:, i] = phasor * X[:, i]
+
+        #plt.plot(np.real(ifft(Y[:,i])))
+        #plt.show()
     
-    """
-    #Calculate necessary parameters
-    N = len(Xk)
-    t1 = (m*Ha)/fs
-    t2 = ((m + 1)*Ha)/fs
-    delta_t = t2 - t1  #Same as Ha/fs
-    k = np.arange(0,N)
-    w = k * fs/N
-    #w = 2 * np.pi * k/N
-
-    #Calculate current and next phase
-    phi_real = np.angle(Xk)
-    #phi_pred_next_frame = phi_real + w*delta_t
-
-    #Adjust frequencies on the current frame
-    phi_offset = normalize_phase(phi_real - phi_pred)
-    IF_w = w + (phi_offset/delta_t)
-
-    return IF_w
+    y = istft(Y, hop_length=Hs, win_length=N, n_fft=N)
+    
+    return y
 
 def TSM_PV(x, fs, N, alpha, Hs):
     """Alpies TSM procedure base on phase vocoder.
@@ -78,40 +86,34 @@ def TSM_PV(x, fs, N, alpha, Hs):
         np.array: Time modify audio signal.
     """
 
-    if alpha == 1:
-        return x
-    if alpha < 1:
-        y = np.zeros(int(len(x) * alpha) + N)  #N accounts for last frame.
-    if alpha > 1:
-        y = np.zeros(int(len(x) * alpha)) 
-    
-    #Window election
-    win_type = "hann"
-    w = get_window(win_type, N)
-    w_norm = window_normalization(w, Hs)
-
     #Inicialization
     Ha = int(Hs/alpha)
-    Xf = stft(x, n_fft=N, hop_length=Ha, win_length=N)
-    pred_phase = np.angle(Xf[0,:])
-    mod_phase = np.angle(Xf[0,:])
-    X_mod = []
-    for i in range(Xf.shape[0]):
-        frame = Xf[i, :]
-        IF_w = instantaneous_frequency(frame, pred_phase, i, fs, Ha)
+    delta_t = Ha/fs
+    win_type = "hann"
+    X = stft(x, n_fft=N, hop_length=Ha, win_length=N, window=win_type)
+    Y = np.zeros(X.shape, dtype=complex)
+    Y[:, 0] = X[:, 0]  # phase initialization
 
-        #Resets values for next iteration
-        mod_phase = mod_phase + IF_w * Hs/fs
-        pred_phase = mod_phase + np.arange(0,len(frame))*len(frame)*Ha
+    k = np.arange(N / 2 + 1)  #Stft uses only postive side
+    omega = k * fs/N  #From 0 fs/2
 
-        frame_mod = np.abs(frame) * np.exp(1j * 2*np.pi * mod_phase)
-        X_mod.append(frame_mod)
+    for i in range(1, X.shape[1]):
+        phi_curr = np.angle(X[:, i])
+        phi_last = np.angle(Y[:, i - 1])
+        phi_pred = phi_last + omega * delta_t
+        
+        phi_error = phi_curr - phi_pred
+        phi_error = normalize_phase(phi_curr - phi_pred)
+        IF_w = omega + (phi_error/delta_t)
+        
+        phi_mod = np.angle(Y[:, i - 1]) + (IF_w * Hs/fs)
+
+        Y[:, i] = np.abs(X[:, i]) * np.exp(2*np.pi * 1j * phi_mod) 
+
+    y = istft(Y, hop_length=Hs, win_length=N, n_fft=N, window=win_type)
     
-    X_mod = np.array(X_mod)
-    y = istft(X_mod, hop_length=Hs, win_length=N, n_fft=N)
-
     return y
-
+    
 def quick_test(path, N, alpha, Hs):
     fs = 22050
     x, _ = read_wav(path, fs)
@@ -129,4 +131,4 @@ N = 2048
 Hs = N//4
 alpha = 0.5
 
-quick_test(test_audio, N, alpha, Hs)
+#quick_test(test_audio, N, alpha, Hs)

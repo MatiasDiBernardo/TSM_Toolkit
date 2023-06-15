@@ -1,34 +1,26 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def compare_3_results(x1, x2, x3, fs):
-    """Plot three signal in a graph.
+def basic_plot(x1, ax, fs, index):
+    t1 = np.linspace(0, len(x1)/fs, len(x1))
+    ax[index].plot(t1, x1)
+    ax[index].set_ylabel("Amplitude")
+    ax[index].set_xlabel("Time")
+
+def compare_results(fs, *x):
+    """Compare signals graphicaly in a plot.
 
     Args:
-        x1 (np.array): Original signal.
-        x2 (np.array): Ideal signal
-        x3 (np.array): Modified signal.
         fs (int): Sample rate.
+        x* (np.array): Signal to plot.
     """
-    
-    fig, ax = plt.subplots(3, 1)
-    t1 = np.linspace(0, len(x1)/fs, len(x1))
-    ax[0].plot(t1, x1)
-    ax[0].set_ylabel("Amplitude")
-    ax[0].set_xlabel("Time")
+    fig, ax = plt.subplots(len(x), 1)
 
-    t2 = np.linspace(0, len(x2)/fs, len(x2))
-    ax[1].plot(t2, x2)
-    ax[1].set_ylabel("Amplitude")
-    ax[1].set_xlabel("Time")
-
-    t3 = np.linspace(0, len(x3)/fs, len(x3))
-    ax[2].plot(t3, x3)
-    ax[2].set_ylabel("Amplitude")
-    ax[2].set_xlabel("Time")
+    for i in range(len(x)):
+        basic_plot(x[i], ax, fs, i)
 
     plt.show()
-    
+
 def basic_plot_comparison(x1,x2,fs):
     """Plot two signals. Compare the signal before and after applying the TSM algorithm.
 
@@ -59,8 +51,4 @@ def basic_plot_comparison(x1,x2,fs):
         ax[1].setxlim([0,len(x2)/fs])
 
     plt.show()
-
-    return 
-
-
 
