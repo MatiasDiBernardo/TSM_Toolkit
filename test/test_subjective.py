@@ -7,6 +7,7 @@ from sine_model.sineTransformations import sineTimeScaling
 from utils.wav_utils import read_wav, save_wav
 import plotting
 import pv
+import pv_2
 import pv_phase_locking
 import ola
 
@@ -28,7 +29,8 @@ def compare_algorithms(path_audio, plot, save_audios, cfg_pv, cfg_ola):
     test, _ = read_wav(path_audio, fs)
 
     #Calculate diferent algotithms on the same audio
-    pv_mod = pv.TSM_PV(test, **cfg_pv)
+    #pv_mod = pv.TSM_PV(test, **cfg_pv)
+    pv_mod = pv_2.TSM_PV_copy(test, **cfg_pv)
     pv_fl_mod = pv_phase_locking.TSM_PV_phase_locking(test, **cfg_pv)
     pv_ref = phase_vocoder(test, s=cfg_pv["alpha"], win_type="hann", win_size=cfg_pv["N"], syn_hop_size=cfg_pv["Hs"])
     sin_model = Sine_Model(test, **cfg_pv)
@@ -45,7 +47,7 @@ def compare_algorithms(path_audio, plot, save_audios, cfg_pv, cfg_ola):
         save_wav(sin_model, fs, name + "_SIN.wav")
         save_wav(ola_mod, fs, name + "_OLA.wav")
 
-#Test subjetive
+#Test subjective
 path_audio = "audios\sharp_bells.wav"
 alpha = 0.7
 fs = 22050

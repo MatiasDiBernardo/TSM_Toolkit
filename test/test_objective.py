@@ -5,6 +5,7 @@ from utils.wav_utils import read_wav, save_wav
 import plotting
 import signals 
 import pv
+import pv_guille
 import pv_2
 import pv_3
 import pv_phase_locking
@@ -27,9 +28,11 @@ def basic_test(x_base, x_ideal, algo, plot, audio_save, fs, N, Hs, alpha):
         (float): Normalize value from 0 to 1 with the effectiveness of the algorithm.
     """
     if algo == "PV":
-        #x_result = pv.TSM_PV(x_base, fs, N, alpha, Hs)
         #x_result = pv_2.TSM_PV(x_base, fs, N, alpha, Hs)
         x_result = pv.TSM_PV(x_base, fs, N, alpha, Hs)
+        #x_result = pv_2.TSM_PV_copy(x_base, fs, N, alpha, Hs)
+        
+        #x_result, _ = pv_guille.TSM_PV(x_base, fs, N, alpha, Hs)
         x_ext = phase_vocoder(x_base, alpha, "hann", N, Hs)
     
     if algo == "PV_FL":
@@ -66,7 +69,7 @@ def basic_test(x_base, x_ideal, algo, plot, audio_save, fs, N, Hs, alpha):
     #similarity = 1/2 * (np.std(x_ideal - x_result)/(np.std(x_ideal) + np.std(x_result)))
     
 def test_ideal_signal(algo, plot, audio_save, fs, N, Hs, alpha):
-    f0 = 500
+    f0 = 1000
     time = 1
     x_base, x_ideal = signals.simple_sine(f0, fs, alpha, time=time)
     sim_result = basic_test(x_base, x_ideal, algo, plot, audio_save, fs, N, Hs, alpha)
@@ -82,7 +85,7 @@ def test_freq_change_signal(algo, plot, audio_save, fs, N, Hs, alpha):
     return sim_result
 
 #Test PV
-cfg1 = {"N": 2048, "Hs": 2048//4, "alpha": 1.5, "fs": 22050}
+cfg1 = {"N": 2048, "Hs": 2048//4, "alpha": 1.2, "fs": 22050}
 
 #OLA
 cfg2 = {"N": 1024, "Hs": 1024//2, "alpha": 0.7, "fs": 22050}

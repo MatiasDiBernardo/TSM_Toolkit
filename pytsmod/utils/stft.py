@@ -1,7 +1,6 @@
 import numpy as np
 from .win import win as win_func
 
-
 def stft(x, ana_hop=2048, win_type='hann', win_size=4096, zero_pad=0, sr=44100,
          fft_shift=0, time_frequency_out=False):
     """Short-Time Fourier Transform (STFT) for the audio signal.
