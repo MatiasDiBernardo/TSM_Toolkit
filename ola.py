@@ -21,11 +21,9 @@ def TSM_OLA(x, N, alpha, Hs):
     #defining output vector size according to scale factor
     if alpha == 1:
         return x 
-    if alpha < 1: 
+    else:
         y = np.zeros(int(len(x) * alpha) + N)  #N accounts for last frame.
-    if alpha > 1:
-        y = np.zeros(int(len(x) * alpha)) 
-    
+     
     #Window election
     win_type = "hann"
     w = get_window(win_type, N)
@@ -42,33 +40,9 @@ def TSM_OLA(x, N, alpha, Hs):
 
         #compute output signal by windowing x_m and normalizing
         #and overlapping according to Hs
-        y[m * Hs: N + (m * Hs)] += (x_m*w)/(w_norm) 
+        y[m * Hs: N + (m * Hs)] += (x_m*w)/(w_norm)
+        #y[m * Hs: N + (m * Hs)] += (x_m * w[:len(x_m)]) / w_norm[:len(x_m)] #chatGPT
                 
     return y 
-
-
-'''
-Observacion:
-tamaño de ventana en segundos: w_size = N/fs
-Para fs = 44100
-
-algunos casos:
-Si N = 1024 -> w_size = 23 ms
-Si N = 2048 -> w_size = 46 ms
-Si N = 4096 -> w_size = 92 ms
-Si N = 8192 -> w_size = 184 ms
-'''
-
-#simple initial tests
-
-'''
-PRUEBA1 - signal: synth - fs=44100 - N=4096 - alpha=1.5 - Hs=N/2
-'''
-#quick_test_OLA('audios/synth.wav',4096,44100,1.5,4096//2,'synth_prueba1')
-
-'''
-PRUEBA2 - signal: sharp_bells - fs=44100 - N=4096 - alpha=1.5 - Hs=N/2
-'''
-#quick_test_OLA('audios/sharp_bells.wav',4096,44100,1.5,4096//2,'bells_prueba1')
 
 
