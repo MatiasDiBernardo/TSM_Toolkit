@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.fftpack import ifft
 from scipy.interpolate import interp1d
 from .utils import stft, istft, _validate_audio, _validate_scale_factor
 
@@ -74,6 +75,7 @@ def phase_vocoder(x, s, win_type='sin', win_size=2048, syn_hop_size=512,
 
             ph_curr = np.angle(X[:, i])
             ph_last = np.angle(X[:, i - 1])
+            #plt.plot(ifft(X[:,i]))
 
             hpi = (ph_curr - ph_last) - dphi  #Dif phi vs phi pred
             hpi = hpi - 2 * np.pi * np.round(hpi / (2 * np.pi))  #Unwrap phase entre -pi y pi
@@ -97,6 +99,14 @@ def phase_vocoder(x, s, win_type='sin', win_size=2048, syn_hop_size=512,
                 phasor = np.exp(1j * theta)
 
             Y[:, i] = phasor * X[:, i]
+
+            #Compare two faces
+            #plt.plot(np.mod(theta, 2*np.pi) - np.pi)
+            #plt.plot(ph_curr)
+            #plt.show()
+
+            #plt.plot(ifft(Y[:,i]))
+            #plt.show()
 
         y_chan = istft(Y, syn_hop=syn_hop_size, win_type=win_type,
                        win_size=win_size, zero_pad=zero_pad, num_iter=1,

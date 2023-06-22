@@ -92,11 +92,12 @@ def TSM_PV(x, fs, N, alpha, Hs):
     win_type = "hann"
     X = stft(x, n_fft=N, hop_length=Ha, win_length=N, window=win_type)
     Y = np.zeros(X.shape, dtype=complex)
-    Y[:, 0] = X[:, 0]  # phase initialization
+    Y[:, 0] = X[:,0]  # phase initialization
 
     k = np.arange(N / 2 + 1)  #Stft uses only postive side
     omega = k * fs/N  #From 0 fs/2
 
+    phase_prop = 2 * np.pi * np.random.rand(X[:, 0].size)  # initialize synthesis phases
     for i in range(1, X.shape[1]):
         phi_curr = np.angle(X[:, i])
         phi_last = np.angle(Y[:, i - 1])
@@ -104,11 +105,26 @@ def TSM_PV(x, fs, N, alpha, Hs):
         
         phi_error = phi_curr - phi_pred
         phi_error = normalize_phase(phi_curr - phi_pred)
-        IF_w = omega + (phi_error/delta_t)
-        
-        phi_mod = np.angle(Y[:, i - 1]) + (IF_w * Hs/fs)
 
-        Y[:, i] = np.abs(X[:, i]) * np.exp(2*np.pi * 1j * phi_mod) 
+        IF_w = omega + (phi_error/delta_t)
+        IF_w += np.mean(omega - IF_w)
+
+        phi_mod = np.angle(Y[:, i - 1]) + (IF_w * Hs/fs) - phi_curr
+
+        #Compare two phases
+        #plt.plot(np.mod(phi_mod, 2*np.pi)-np.pi)
+        #plt.plot(phi_curr)
+        #plt.show()
+
+        #plt.plot(omega)
+        #plt.plot(IF_w)
+        #plt.show()
+        
+        #Phase prop, otra opción pero funca bien pero con Hs/6 no funca
+        phase_prop += (np.pi * (omega + np.abs(X[:,i]))/fs) * Ha
+        #ytphase += (np.pi * (lastytfreq + tfreq[l, :]) / fs) * H  # propagate phases
+
+        Y[:, i] = np.abs(X[:, i]) * np.exp(1j * 2*np.pi * phi_mod) 
 
     y = istft(Y, hop_length=Hs, win_length=N, n_fft=N, window=win_type)
     
