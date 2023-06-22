@@ -47,9 +47,9 @@ def TSM_PV(x, fs, N, alpha, Hs):
         #Calculate Instantanious frequency
         IF_w = (i + phi_error) * fs / N
 
-        plt.plot(omega)
-        plt.plot(IF_w)
-        plt.show()
+        #plt.plot(omega)
+        #plt.plot(IF_w)
+        #plt.show()
         
         #Phase modification using IF
         phi_mod = np.angle(Y[:, i - 1]) + (IF_w * Hs/fs)

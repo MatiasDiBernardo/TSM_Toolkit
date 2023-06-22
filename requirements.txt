@@ -2,3 +2,4 @@ numpy
 librosa
 matplotlib
 scipy
+ipython

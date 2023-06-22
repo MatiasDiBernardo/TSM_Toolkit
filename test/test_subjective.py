@@ -37,7 +37,10 @@ def compare_algorithms(path_audio, plot, save_audios, cfg_pv, cfg_ola):
     ola_mod =  ola.TSM_OLA(test, **cfg_ola)
     
     if plot:
-        plotting.compare_results(fs, test, pv_mod, pv_ref, sin_model)
+        #La idea de este va a ser comparar los resultados de nuestra implementación, contra la de referencia, contra la de
+        #el sine model que es otro método que lo saqué de otro lado.
+        titles = ["Original", "TSM Nuestro", "TSM Librería", "Sine Model"]
+        plotting.compare_results(fs, titles, test, pv_mod, pv_ref, sin_model)
     
     if save_audios:
         name = path_audio.split(".")[0]
@@ -55,5 +58,5 @@ fs = 22050
 cfg_pv = {"N": 2048, "Hs": 2048//4, "alpha": alpha, "fs": fs}
 cfg_ola = {"N": 1024, "Hs": 1024//2, "alpha": alpha}
 
-compare_algorithms(path_audio, plot=True, save_audios=True, cfg_pv=cfg_pv, cfg_ola=cfg_ola)
+#compare_algorithms(path_audio, plot=True, save_audios=True, cfg_pv=cfg_pv, cfg_ola=cfg_ola)
 

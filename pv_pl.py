@@ -85,7 +85,6 @@ def TSM_PV_FL(x, fs, N, alpha, Hs):
         phi_error = np.mod(phi_error + 0.5, 1) - 0.5 
 
         IF_w = phase_locking(omega, phi_error, peaks, delta_t)
-        print(IF_w)
 
         phi_mod = np.angle(Y[:, i - 1]) + (IF_w * Hs/fs)
 

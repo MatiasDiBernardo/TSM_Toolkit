@@ -1,13 +1,15 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def basic_plot(x1, ax, fs, index):
+def basic_plot(x1, ax, fs, index, titles):
     t1 = np.linspace(0, len(x1)/fs, len(x1))
+    ax[index].set_title(titles[index])
     ax[index].plot(t1, x1)
     ax[index].set_ylabel("Amplitude")
     ax[index].set_xlabel("Time")
 
-def compare_results(fs, *x):
+
+def compare_results(fs, titles, *x):
     """Compare signals graphicaly in a plot.
 
     Args:
@@ -17,7 +19,10 @@ def compare_results(fs, *x):
     fig, ax = plt.subplots(len(x), 1)
 
     for i in range(len(x)):
-        basic_plot(x[i], ax, fs, i)
+        basic_plot(x[i], ax, fs, i, titles)
+    
+    fig.tight_layout() # Or equivalently,  "plt.tight_layout()"
+    fig.subplots_adjust(hspace=1)
 
     plt.show()
 
