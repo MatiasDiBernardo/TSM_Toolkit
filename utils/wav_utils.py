@@ -11,6 +11,13 @@ Aclaración para mi, ahí estoy obligando a definir un fs antes, pero es mejor u
 el file que ponga el usuario. Repensar y arreglar eso.
 """
 
+def is_stereo(file_path):
+    x, fs = librosa.load(file_path, mono=False)
+    if len(x.shape) > 1:
+        return False
+    else:
+        return True
+
 def read_wav(file_path, fs, mono=False):
     """Reads an audio wav file and convert it to mono if needed.
 
@@ -25,10 +32,10 @@ def read_wav(file_path, fs, mono=False):
     """
 
     if mono:
-        audio, fs = librosa.load(file_path, sr=fs, mono=False)
+        audio, fs = librosa.load(file_path, sr=fs, mono=True)
         return (audio, audio)
 
-    audio, fs = librosa.load(file_path, sr=fs)
+    audio, fs = librosa.load(file_path, sr=fs, mono=False)
 
     #Untested para estereo pero creo que esta bien
     if len(audio.shape) > 1:

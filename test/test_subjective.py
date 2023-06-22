@@ -10,6 +10,7 @@ import pv
 import pv_2
 import pv_pl
 import ola
+import tsm_hps
 
 def Sine_Model(x, N=2048, Hs= 2048//4, alpha= 1.2, fs=22050):
     w = get_window("hann", N)
@@ -24,7 +25,7 @@ def Sine_Model(x, N=2048, Hs= 2048//4, alpha= 1.2, fs=22050):
 
     return y
 
-def compare_algorithms(path_audio, plot, save_audios, cfg_pv, cfg_ola):
+def compare_algorithms(path_audio, plot, save_audios, cfg_pv, cfg_ola, cfg_hps):
     fs = 22050
     test, _ = read_wav(path_audio, fs)
 
@@ -35,6 +36,7 @@ def compare_algorithms(path_audio, plot, save_audios, cfg_pv, cfg_ola):
     pv_ref = phase_vocoder(test, s=cfg_pv["alpha"], win_type="hann", win_size=cfg_pv["N"], syn_hop_size=cfg_pv["Hs"])
     sin_model = Sine_Model(test, **cfg_pv)
     ola_mod =  ola.TSM_OLA(test, **cfg_ola)
+    tsm_hps_mod = tsm_hps.TSM_HPS(test, cfg_ola, cfg_pv, cfg_hps)
     
     if plot:
         #La idea de este va a ser comparar los resultados de nuestra implementación, contra la de referencia, contra la de
@@ -49,7 +51,8 @@ def compare_algorithms(path_audio, plot, save_audios, cfg_pv, cfg_ola):
         save_wav(pv_ref, fs, name + "_PV_REF.wav")
         save_wav(sin_model, fs, name + "_SIN.wav")
         save_wav(ola_mod, fs, name + "_OLA.wav")
-
+        save_wav(tsm_hps_mod, fs, name + "_HPS.wav")
+        
 #Test subjective
 path_audio = "audios\sharp_bells.wav"
 alpha = 1.5
@@ -57,6 +60,7 @@ fs = 22050
 
 cfg_pv = {"N": 2048, "Hs": 2048//4, "alpha": alpha, "fs": fs}
 cfg_ola = {"N": 1024, "Hs": 1024//2, "alpha": alpha}
+cfg_hps = {"N": 1024, "M":17}
 
-#compare_algorithms(path_audio, plot=True, save_audios=True, cfg_pv=cfg_pv, cfg_ola=cfg_ola)
+compare_algorithms(path_audio, plot=True, save_audios=True, cfg_pv=cfg_pv, cfg_ola=cfg_ola, cfg_hps=cfg_hps)
 
