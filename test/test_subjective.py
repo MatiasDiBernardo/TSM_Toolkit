@@ -8,7 +8,7 @@ from utils.wav_utils import read_wav, save_wav
 import plotting
 import pv
 import pv_2
-import pv_phase_locking
+import pv_pl
 import ola
 
 def Sine_Model(x, N=2048, Hs= 2048//4, alpha= 1.2, fs=22050):
@@ -29,9 +29,9 @@ def compare_algorithms(path_audio, plot, save_audios, cfg_pv, cfg_ola):
     test, _ = read_wav(path_audio, fs)
 
     #Calculate diferent algotithms on the same audio
-    #pv_mod = pv.TSM_PV(test, **cfg_pv)
     pv_mod = pv_2.TSM_PV_copy(test, **cfg_pv)
-    pv_fl_mod = pv_phase_locking.TSM_PV_phase_locking(test, **cfg_pv)
+    #pv_mod = pv_2.TSM_PV_copy(test, **cfg_pv)
+    pv_fl_mod = pv_pl.TSM_PV_FL(test, **cfg_pv)
     pv_ref = phase_vocoder(test, s=cfg_pv["alpha"], win_type="hann", win_size=cfg_pv["N"], syn_hop_size=cfg_pv["Hs"])
     sin_model = Sine_Model(test, **cfg_pv)
     ola_mod =  ola.TSM_OLA(test, **cfg_ola)
@@ -49,7 +49,7 @@ def compare_algorithms(path_audio, plot, save_audios, cfg_pv, cfg_ola):
 
 #Test subjective
 path_audio = "audios\sharp_bells.wav"
-alpha = 0.7
+alpha = 1.5
 fs = 22050
 
 cfg_pv = {"N": 2048, "Hs": 2048//4, "alpha": alpha, "fs": fs}

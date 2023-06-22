@@ -187,4 +187,4 @@ N = 2048
 Hs = N//4
 alpha = 0.5
 
-quick_test(test_audio, N, alpha, Hs)
+#quick_test(test_audio, N, alpha, Hs)
