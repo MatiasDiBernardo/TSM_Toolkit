@@ -5,7 +5,7 @@ from sine_model.sineModel import sineModelAnal, sineModelSynth
 from sine_model.sineTransformations import sineTimeScaling
 
 from utils.wav_utils import read_wav, save_wav
-import plotting
+from test import plotting
 import pv
 import pv_2
 import pv_pl

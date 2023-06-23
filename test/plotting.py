@@ -56,3 +56,45 @@ def basic_plot_comparison(x1,x2,fs):
 
     plt.show()
 
+def basic_3plot(x1,x2,x3,fs):
+    """Plot three signals. 
+    Compares the original signal with the refrence (pytsmod pack) 
+    with the local tsm algorithm.
+    it keeps the horizontal axis according to the longer signal, 
+    for an easier visual comparison.
+    Args:
+        x1 (np.array): Original signal.
+        x2 (np.array): Modified signal with pytsmod.
+        x3 (np.array): Modified signal with our code.
+        fs (int): Sample rate.
+    """
+
+    #calculate the x axis time array
+    lengths = [len(x1), len(x2), len(x3)]
+    max_length = max(lengths)
+
+    fig, ax = plt.subplots(3, 1)
+
+    t1 = np.linspace(0, len(x1)/fs, len(x1))
+    ax[0].set_title("Señal original")
+    ax[0].plot(t1, x1)
+    ax[0].set_ylabel("Amplitude")
+    ax[0].set_xlabel("Time") 
+    ax[0].set_xlim([0,max_length/fs])
+
+    t2 = np.linspace(0, len(x2)/fs, len(x2))
+    ax[1].set_title("Señal modificada con pytsmod (ref package)")
+    ax[1].plot(t2, x2)
+    ax[1].set_ylabel("Amplitude")
+    ax[1].set_xlabel("Time")
+    ax[1].set_xlim([0,max_length/fs])
+
+    t3 = np.linspace(0, len(x3)/fs, len(x3))
+    ax[2].set_title("Señal modificada con nuestro codigo")
+    ax[2].plot(t3, x3)
+    ax[2].set_ylabel("Amplitude")
+    ax[2].set_xlabel("Time")
+    ax[2].set_xlim([0,max_length/fs])
+
+    plt.show()
+
