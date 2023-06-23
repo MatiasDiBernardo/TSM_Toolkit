@@ -53,7 +53,7 @@ def hps(x, N, M):
     xh = np.concatenate((xh, np.zeros(l)))
   
     return xp, xh
-''''
+'''
 # %% SEÑAL X 
 
 #parte de prueba temporal para definir señales
@@ -112,4 +112,4 @@ plt.show()
 
 
 # %%
-''''
+'''
