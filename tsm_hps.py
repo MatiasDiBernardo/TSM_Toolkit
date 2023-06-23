@@ -6,11 +6,11 @@ import ola
 def match_sizes_with_padding(x1, x2):
     if len(x1) > len(x2):
         dif = len(x1) - len(x2)
-        x2 = np.concatenate([x2, np.zeros(dif)])
+        x2 = np.concatenate([np.zeros(dif), x2])
         return x1, x2
     else:
         dif = len(x2) - len(x1)
-        x1 = np.concatenate([x1, np.zeros(dif)])
+        x1 = np.concatenate([np.zeros(dif), x1])
         return x1, x2
 
 def TSM_HPS(x, cfg_ola, cfg_pv, cfg_hps):
