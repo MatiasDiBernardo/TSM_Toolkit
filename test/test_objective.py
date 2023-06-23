@@ -2,12 +2,9 @@ import numpy as np
 from pytsmod import phase_vocoder
 
 from utils.wav_utils import read_wav, save_wav
-import plotting
-import signals 
+from test import plotting
+from test import signals 
 import pv
-import pv_guille
-import pv_2
-import pv_3
 import pv_pl
 import ola
 
