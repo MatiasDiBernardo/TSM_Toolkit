@@ -7,7 +7,6 @@ from sine_model.sineTransformations import sineTimeScaling
 from utils.wav_utils import read_wav, save_wav
 from test import plotting
 import pv
-import pv_2
 import pv_pl
 import ola
 import tsm_hps
@@ -25,34 +24,60 @@ def Sine_Model(x, N=2048, Hs= 2048//4, alpha= 1.2, fs=22050):
 
     return y
 
-def compare_algorithms(path_audio, plot, save_audios, cfg_pv, cfg_ola, cfg_hps):
-    fs = 22050
-    test, _ = read_wav(path_audio, fs)
+def apply_algo(x, type, cfg):
+    if type == "OLA":
+        y = ola.TSM_OLA(x, **cfg)
+    if type == "PV":
+        y = pv.TSM_PV(x, **cfg)
+    if type == "PV_FL":
+        y =  pv_pl.TSM_PV_FL(x, **cfg)
+    if type == "HPS":
+        y = tsm_hps.TSM_HPS(x, **cfg)
+    if type == "PV_REF":
+        y = phase_vocoder(x, s=cfg["alpha"], win_type="hann", win_size=cfg["N"], syn_hop_size=cfg["Hs"])
+    if type == "SIN_M":
+        y = Sine_Model(x, **cfg)
+    return y
 
-    #Calculate diferent algotithms on the same audio
-    pv_mod = pv_2.TSM_PV_copy(test, **cfg_pv)
-    #pv_mod = pv_2.TSM_PV_copy(test, **cfg_pv)
-    pv_fl_mod = pv_pl.TSM_PV_FL(test, **cfg_pv)
-    pv_ref = phase_vocoder(test, s=cfg_pv["alpha"], win_type="hann", win_size=cfg_pv["N"], syn_hop_size=cfg_pv["Hs"])
-    sin_model = Sine_Model(test, **cfg_pv)
-    ola_mod =  ola.TSM_OLA(test, **cfg_ola)
-    tsm_hps_mod = tsm_hps.TSM_HPS(test, cfg_ola, cfg_pv, cfg_hps)
-    
+def compare_algorithms(path_audio, algo_comp, plot, save_audios, return_audios):
+    """Compare a real audio with different algorithms or diferent parameteres.
+    Algo types: "OLA" : Overlapp-add
+                "PV" : Phase Vocoder
+                "PV_FL" : Phase Vocoder with Phase Locking
+                "HPS" : TSM with harmonic-percussive separation
+                "PV_REG" : Pytsmod Implementation Phase Vocoder
+                "SIN_M" : TSM base on Sine Model.
+
+    Args:
+        path_audio (str): Path to audio file.
+        algo_comp (list): List with type of algo, config and title. Ex ["PV", cgf1, "PV Cfg1"]
+        plot (boolean): Plot or not.
+        save_audios (bolean): Save audios or not.
+        return_audios (bolean): Return audios or not.
+    """
+
+    fs = 22050
+    test, _ = read_wav(path_audio, fs, mono=True)
+
+    titles = []
+    signals = []
+
+    for data in algo_comp:
+        y = apply_algo(test, data[0], data[1])
+        signals.append(y)
+        titles.append(data[2])
+        
     if plot:
-        #La idea de este va a ser comparar los resultados de nuestra implementación, contra la de referencia, contra la de
-        #el sine model que es otro método que lo saqué de otro lado.
-        titles = ["Original", "TSM Nuestro", "TSM Librería", "Sine Model"]
-        plotting.compare_results(fs, titles, test, pv_mod, pv_ref, sin_model)
+        plotting.compare_results(fs, titles, *signals)
     
     if save_audios:
         name = path_audio.split(".")[0]
-        save_wav(pv_mod, fs, name + "_PV.wav" )
-        save_wav(pv_fl_mod, fs, name + "_PV_FL.wav" )
-        save_wav(pv_ref, fs, name + "_PV_REF.wav")
-        save_wav(sin_model, fs, name + "_SIN.wav")
-        save_wav(ola_mod, fs, name + "_OLA.wav")
-        save_wav(tsm_hps_mod, fs, name + "_HPS.wav")
-        
+        for i in range(len(signals)):
+            save_wav(signals[i], fs, f"{name}_{titles[i]}.wav" )
+    
+    if return_audios:
+        return signals
+ 
 #Test subjective
 path_audio = "audios\sharp_bells.wav"
 alpha = 1.5
