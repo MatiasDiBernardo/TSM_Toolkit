@@ -6,6 +6,7 @@ Este script es el que tiene mas sentido de armarlo como una sola clase pero por 
 vamos a dejarlo así y después vemos. 
 """
 
+
 def simple_sine(f0, fs, alpha, time = 1):
     """Generates a base cosine signal and a modifed signal
     according to the stretching factor.
@@ -62,3 +63,59 @@ def fast_changes(f1, f2, fs, fluctuation_time, alpha, time=1):
         x_ideal[i] = np.cos(2*np.pi *f * t_ideal[i])
 
     return x_base, x_ideal
+
+def impulses(N, fs, A, t, time = 1):
+
+    """Generates a series impulses.
+    Args:
+        N (int): number of impulses.
+        fs (int): Sample rate.
+        M(int): lenght of the impulse in miliseconds.
+        time (float): Time of the signal in seconds. Default=1.
+    Return:
+        (np.array): Vector of impulses.
+        fs(int): sample rate.
+    """
+    t = t/1000
+    T = 1/fs
+    nt = int(t/T)
+    t_base = np.linspace(0, time, int(fs*time))
+    x = np.zeros(len(t_base))
+    t_s =  time/(N+1)   
+    t_i = np.arange(t_s,1,t_s)
+    n = t_i/T
+    n_i = np.arange(0,nt,1)
+    imp_exp = A**(n_i/(len(n_i)-1))
+    for i in range(len(n)):
+        for l in range(nt):
+            x[int(n[i])+ l] = imp_exp[l]
+    return x
+
+def harmonic(N, f0, fs, A, time = 1):
+
+    """Generates an armonic signal with frecuency f, and N armonics.
+    Args:
+        N (int): number of impulses.
+        fs (int): Sample rate.
+        M(int): lenght of the impulse in miliseconds.
+        time (float): Time of the signal in seconds. Default=1.
+    Return:
+        (np.array): output signal.
+        fs(int): sample rate.
+    """
+
+    t_base = np.linspace(0, time, int(fs * time))
+    x = np.zeros(len(t_base))
+    A = abs(A)
+    if A>1: 
+        for i in range(N):
+            x = x + (A**(1-(i/20))) *np.sin(2*np.pi *(f0)* t_base* (i+1))
+ 
+    else:
+        for i in range(N):
+            x = x + (A**(1+(i/20))) *np.sin(2*np.pi *(f0)* t_base* (i+1))
+    return x
+
+
+
+

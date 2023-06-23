@@ -13,7 +13,7 @@ def HPS(x, N, M):
     Args:
         x (np.array): Audio signal.
         fs (int): Sample rate.
-        N (int): Window lenght for FFT.
+        N (int): Window lenght for STFT.
         M (int): Median filter window leight, this value must be 
         odd. In the contrary it will be forced to the upper inmedate.
 
@@ -58,7 +58,7 @@ def HPS(x, N, M):
 
 #parte de prueba temporal para definir señales
 L = 5000
-fs = 44100
+fs = 88200
 n = np.arange(0, L-1, 1) 
 f1 = 100
 f2 = 400
@@ -74,8 +74,8 @@ plt.grid()
 plt.show()
 # %% USANDO LA FUNCION (BORRAR)
 
-M = 17
-N = 1024
+M = 13
+N = 2048
 xp, xh = HPS(x , N , M)
 
 #Waveform armonica  
@@ -96,7 +96,7 @@ plt.show()
 plt.figure() #Espectro mascara percusiva
 plt.specgram(xp, NFFT = N,Fs = fs)
 #plt.yscale("log")
-plt.ylim([0, 2000])
+plt.ylim([0, 20000])
 plt.grid()
 plt.colorbar()
 plt.show()
@@ -104,7 +104,7 @@ plt.show()
 plt.figure() #Espectro mascara armonica
 plt.specgram(xh, NFFT = N,Fs = fs)
 #plt.yscale("log")
-plt.ylim([0, 2000])
+plt.ylim([0, 20000])
 plt.grid()
 plt.colorbar()
 plt.show()
