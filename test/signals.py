@@ -96,8 +96,9 @@ def harmonic(N, f0, fs, A, time = 1):
     """Generates an armonic signal with frecuency f, and N armonics.
     Args:
         N (int): number of impulses.
+        f0 (float): Frecuency of the fundamental.
         fs (int): Sample rate.
-        M(int): lenght of the impulse in miliseconds.
+        M (int): lenght of the impulse in miliseconds.
         time (float): Time of the signal in seconds. Default=1.
     Return:
         (np.array): output signal.
@@ -115,6 +116,8 @@ def harmonic(N, f0, fs, A, time = 1):
         for i in range(N):
             x = x + (A**(1+(i/20))) *np.sin(2*np.pi *(f0)* t_base* (i+1))
     return x
+
+# %% 
 
 
 

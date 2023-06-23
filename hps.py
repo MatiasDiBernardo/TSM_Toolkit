@@ -6,7 +6,7 @@ from scipy.signal import stft
 from scipy.signal import medfilt as mediann
 from librosa import stft, istft
 
-def HPS(x, N, M):
+def hps(x, N, M):
     """ Divides the percusive and harmonics components from the input signal
     returning two diferent signals.
 
@@ -53,7 +53,7 @@ def HPS(x, N, M):
     xh = np.concatenate((xh, np.zeros(l)))
   
     return xp, xh
-
+''''
 # %% SEÑAL X 
 
 #parte de prueba temporal para definir señales
@@ -112,3 +112,4 @@ plt.show()
 
 
 # %%
+''''
