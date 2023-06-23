@@ -85,3 +85,54 @@ def test_freq_change_signal(algo, fs, config, plot, audio_save, return_audios):
     sim_result = basic_test(x_base, x_ideal, fs, algo, config, plot, audio_save, return_audios)
     
     return sim_result
+
+def dif_and_gain_values(algorithm, fs, configs):
+    v_dif = []
+    g_dif = []
+
+    res = 50
+    freqs = np.linspace(20,10000, res)  #Frecuencias a analizar
+
+    for cfg in configs:
+
+        sim_value = []
+        gain_dif_value = []
+
+        for f in freqs:
+            sim, gain = test_ideal_signal(algo=algorithm, f0=f, fs=fs, config=cfg, plot=False, audio_save=False, return_audios=False)
+            sim_value.append(sim)
+            gain_dif_value.append(gain)
+        
+        sim_avg = np.sum(sim_value)/res
+        gain_avg = np.sum(gain_dif_value)/res
+
+        v_dif.append(sim_avg)
+        g_dif.append(gain_avg)
+    
+    return v_dif, g_dif
+
+def obj_test():
+    """Compares diferent configurations on the ideal signal test
+    calculating the avaregue of results between different frequencies.
+    """
+
+    fs = 22050
+    algo = "PV"
+    alpha = 0.5
+    Hs_factor = 4
+
+    cfg1 = {"N": 512, "Hs": 512//Hs_factor, "alpha": alpha, "fs": fs}
+    cfg2 = {"N": 1024, "Hs": 1024//Hs_factor, "alpha": alpha, "fs": fs}
+    cfg3 = {"N": 2048, "Hs": 2048//Hs_factor, "alpha": alpha, "fs": fs}
+    cfg4 = {"N": 4096, "Hs": 4096//Hs_factor, "alpha": alpha, "fs": fs}
+    cfg5 = {"N": 8192, "Hs": 8192//Hs_factor, "alpha": alpha, "fs": fs}
+    cfg6 = {"N": 16384, "Hs": 16384//Hs_factor, "alpha": alpha, "fs": fs}
+
+    configs = [cfg1, cfg2, cfg3, cfg4, cfg5, cfg6]
+
+    dif, gain = dif_and_gain_values(algo, fs, configs)
+    print("Dif ideal: ", dif)
+    print("Dif gain: ", gain)
+
+
+        
