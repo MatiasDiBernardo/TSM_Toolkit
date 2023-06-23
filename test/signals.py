@@ -70,7 +70,8 @@ def impulses(N, fs, A, t, time = 1):
     Args:
         N (int): number of impulses.
         fs (int): Sample rate.
-        M(int): lenght of the impulse in miliseconds.
+        A(float): Amplituf
+        t(int): lenght of the impulse in miliseconds.
         time (float): Time of the signal in seconds. Default=1.
     Return:
         (np.array): Vector of impulses.
