@@ -13,6 +13,7 @@ def compare_results(fs, titles, *x):
 
     Args:
         fs (int): Sample rate.
+        titles(str): List of names. Must be same size of amount of signals.
         x* (np.array): Signal to plot.
     """
     fig, ax = plt.subplots(len(x), 1)

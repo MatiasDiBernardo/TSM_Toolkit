@@ -1,8 +1,6 @@
 import numpy as np
 from librosa import stft, istft
-#from pytsmod import stft, istft
 import matplotlib.pyplot as plt
-from scipy.fftpack import fft, ifft
 
 def TSM_PV(x, fs, N, alpha, Hs):
     """Alpies TSM procedure base on phase vocoder.
@@ -23,7 +21,6 @@ def TSM_PV(x, fs, N, alpha, Hs):
     delta_t = Ha/fs
     win_type = "hann"
     X = stft(x, n_fft=N, hop_length=Ha, win_length=N, window=win_type)
-    #X = stft(x, Ha, win_type, N, sr=fs)
     Y = np.zeros(np.shape(X), dtype=complex)  #Output STFT
     Y[:, 0] = X[:, 0]  # phase initialization
 
@@ -34,7 +31,6 @@ def TSM_PV(x, fs, N, alpha, Hs):
         #Save current and last mod phase
         phi_curr = (np.angle(X[:, i])) / (2*np.pi)  #Phase between (-0.5, 0.5)
         phi_last = (np.angle(Y[:, i - 1]))/ (2*np.pi)
-        #plt.plot(np.real(ifft(X[:,i])))
 
         #Calculates ideal next phase
         phi_pred = phi_last + omega * delta_t
@@ -47,19 +43,12 @@ def TSM_PV(x, fs, N, alpha, Hs):
         #Calculate Instantanious frequency
         IF_w = (i + phi_error) * fs / N
 
-        #plt.plot(omega)
-        #plt.plot(IF_w)
-        #plt.show()
-        
         #Phase modification using IF
         phi_mod = np.angle(Y[:, i - 1]) + (IF_w * Hs/fs)
 
         #Add modify frame to output stft
         Y[:, i] = np.abs(X[:, i]) * np.exp(2*np.pi * 1j * phi_mod) 
-        #plt.plot(np.real(ifft(Y[:,i])))
-        #plt.show()
 
     y = istft(Y, hop_length=Hs, win_length=N, n_fft=N, window=win_type)
-    #y = istft(Y, Hs, win_type, N)
     
     return y
