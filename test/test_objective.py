@@ -1,6 +1,6 @@
 import numpy as np
 
-from main import apply_algo
+from main import apply_algo 
 from utils.wav_utils import read_wav, save_wav
 from test import plotting
 from test import signals 
@@ -71,6 +71,19 @@ def test_ideal_signal(algo, f0, fs, config, plot, audio_save, return_audios):
     
     return sim_result
 
+def test_imp_signal(algo,fs, config, plot, audio_save, return_audios):
+    time = 1
+    if algo == "HPS":
+        cfg = config[1]
+        alpha = cfg["alpha"]
+    else:
+        alpha = config["alpha"]
+        
+    x_base, x_ideal = signals.simple_impulse(fs, alpha, time=time)
+    sim_result = basic_test(x_base, x_ideal, fs, algo, config, plot, audio_save, return_audios)
+    
+    return sim_result 
+    
 def test_freq_change_signal(algo, fs, config, plot, audio_save, return_audios):
     f1 = 200
     f2 = 450 
