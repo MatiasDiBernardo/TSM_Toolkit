@@ -116,9 +116,3 @@ def harmonic(N, f0, fs, A, time = 1):
         for i in range(N):
             x = x + (A**(1+(i/20))) *np.sin(2*np.pi *(f0)* t_base* (i+1))
     return x
-
-# %% 
-
-
-
-
