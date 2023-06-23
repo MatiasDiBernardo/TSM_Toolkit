@@ -37,3 +37,12 @@ def TSM_HPS(x, cfg_ola, cfg_pv, cfg_hps):
 
     return x_output
 
+#from pytsmod.hptsm import _hpss
+#
+#t = np.linspace(0,1,4000)
+#x = np.cos(10*t)
+#rta = np.pad(x, (1024//2, 1024 + 256), "constant")
+#x = x[np.newaxis, :]
+#print(x.shape)
+#
+#y1, y2 = _hpss(x)
