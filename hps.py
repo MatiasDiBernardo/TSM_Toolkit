@@ -1,5 +1,4 @@
 
-# %%
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import stft 
@@ -51,4 +50,4 @@ def hps(x, N, M):
     l = len(x)-len(xp)
     xp = np.concatenate((xp, np.zeros(l)))
     xh = np.concatenate((xh, np.zeros(l)))
-    return xp, xh
+
