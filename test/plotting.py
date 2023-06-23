@@ -13,6 +13,7 @@ def compare_results(fs, titles, *x):
 
     Args:
         fs (int): Sample rate.
+        titles(str): List of names. Must be same size of amount of signals.
         x* (np.array): Signal to plot.
     """
     fig, ax = plt.subplots(len(x), 1)
@@ -56,6 +57,7 @@ def basic_plot_comparison(x1,x2,fs):
 
     plt.show()
 
+
 def basic_3plot(x1,x2,x3,fs):
     """Plot three signals. 
     Compares the original signal with the refrence (pytsmod pack) 
@@ -95,6 +97,4 @@ def basic_3plot(x1,x2,x3,fs):
     ax[2].set_ylabel("Amplitude")
     ax[2].set_xlabel("Time")
     ax[2].set_xlim([0,max_length/fs])
-
-    plt.show()
 

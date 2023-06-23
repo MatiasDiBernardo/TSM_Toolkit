@@ -1,5 +1,4 @@
 
-# %%
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import stft 
@@ -53,63 +52,6 @@ def hps(x, N, M):
     xh = np.concatenate((xh, np.zeros(l)))
   
     return xp, xh
-'''
-# %% SEÑAL X 
-
-#parte de prueba temporal para definir señales
-L = 5000
-fs = 88200
-n = np.arange(0, L-1, 1) 
-f1 = 100
-f2 = 400
-#Componentes armonicas
-x = np.sin(n * (f1/fs) * 2 * np.pi ) + np.sin(n * (f2/fs) * 2 * np.pi )
-#Impulsos
-for i in range(20):# Generamos inpulsos de 20 muestras 
-    x[i+300] = 10
-    x[i+3000] = 10       
-
-plt.plot(n ,x )
-plt.grid()
-plt.show()
-# %% USANDO LA FUNCION (BORRAR)
-
-M = 13
-N = 2048
-xp, xh = HPS(x , N , M)
-
-#Waveform armonica  
-n =  np.arange(0,len(xh))
-
-#plt.plot(n, xh)
-
-plt.plot(n, x, 'blue')
-plt.plot(n, xh,'orange')
-plt.axvline(x = M, color = 'red', label = 'axvline - full height')
-plt.show()
-
-plt.plot(n, x, 'blue')
-plt.plot(n, xp,'orange')
-plt.axvline(x = M, color = 'red', label = 'axvline - full height')
-plt.show()
-
-plt.figure() #Espectro mascara percusiva
-plt.specgram(xp, NFFT = N,Fs = fs)
-#plt.yscale("log")
-plt.ylim([0, 20000])
-plt.grid()
-plt.colorbar()
-plt.show()
-
-plt.figure() #Espectro mascara armonica
-plt.specgram(xh, NFFT = N,Fs = fs)
-#plt.yscale("log")
-plt.ylim([0, 20000])
-plt.grid()
-plt.colorbar()
-plt.show()
 
 
 
-# %%
-'''
