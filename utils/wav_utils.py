@@ -54,6 +54,6 @@ def save_wav(audio, fs, save_path):
         fs (int): Sample frequency.
         save_path (str): Path with the location to save the file. 
     """
-    
+    sf.write()
     sf.write(save_path, audio, fs)
     
