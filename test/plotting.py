@@ -56,3 +56,15 @@ def basic_plot_comparison(x1,x2,fs):
 
     plt.show()
 
+    def three_signal_Plot(x1,x2,x3,fs):
+            
+            fig, (ax1, ax2, ax3) = plt.subplots(3, sharex=True)
+    ax1.plot(x, y1, c='red')
+    ax2.plot(x, y2, c='red')
+    
+    ax1.set_ylabel('Simple plot with sin(x)')
+    ax2.set_ylabel('Simple plot with sin(x**2)')
+    
+    fig.suptitle('Subplots with shared axis')
+    plt.show()
+

@@ -81,14 +81,18 @@ def impulses(N, fs, A, t, time = 1):
     nt = int(t/T)
     t_base = np.linspace(0, time, int(fs*time))
     x = np.zeros(len(t_base))
-    t_s =  time/(N+1)   
+    t_s =  time/(N+1)  
+    if t_s<=t:
+        return print('The duration of the impuse exceeds the time interval between impulses')
     t_i = np.arange(t_s,1,t_s)
     n = t_i/T
     n_i = np.arange(0,nt,1)
     imp_exp = A**(n_i/(len(n_i)-1))
+    
+
     for i in range(len(n)):
         for l in range(nt):
-            x[int(n[i])+ l] = imp_exp[l]
+            x[ int(n[i])+ l] = imp_exp[l]
     return x
 
 def harmonic(N, f0, fs, A, time = 1):
