@@ -1,5 +1,3 @@
-import numpy as np
-
 from utils.wav_utils import read_wav,save_wav
 from main import apply_algo
 from test import plotting

@@ -1,16 +1,6 @@
 import librosa
 import soundfile as sf
 
-"""
-Acá bien podemos trabajar todo como mono o trabajar en stereo pero separados los canales 
-y después reconstruir la señal estereo. Osea hay que hacer funcionar el código primero para mono
-y la implementación del stereo sale de eso, porque sino hay que trabajar el stereo como otra matrix
-lo cual implicaría tener que refactorizar bastante si se quiere hacer la adaptación.
-
-Aclaración para mi, ahí estoy obligando a definir un fs antes, pero es mejor usar el fs que te tire
-el file que ponga el usuario. Repensar y arreglar eso.
-"""
-
 def is_stereo(file_path):
     x, fs = librosa.load(file_path, mono=False)
     if len(x.shape) > 1:
@@ -37,7 +27,6 @@ def read_wav(file_path, fs, mono=False):
 
     audio, fs = librosa.load(file_path, sr=fs, mono=False)
 
-    #Untested para estereo pero creo que esta bien
     if len(audio.shape) > 1:
         audio_L = audio[:,0]
         audio_R = audio[:,1]

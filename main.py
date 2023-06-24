@@ -1,6 +1,6 @@
 import numpy as np
 
-from utils.wav_utils import read_wav, save_wav, is_stereo
+from utils.wav_utils import read_wav, is_stereo
 from pytsmod import phase_vocoder
 from sine_model.sine_modification import Sine_Model
 import ola
@@ -62,11 +62,9 @@ def main(file_path, alpha, type):
         alpha (float): Stretching factor.
         type (string): Type of algorithm to implement.
     """
-    #Agregar chequeo de la dimensiones de alpha y ver hasta donde se la banca
 
-    #Completar con las mejores configs
-
-    cfg_ola = {"N": 1024, "Hs": 1024//2, "alpha": alpha}
+    #Main configurations
+    cfg_ola = {"N": 512, "Hs": 512//2, "alpha": alpha}
     cfg_pv = {"N": 4096, "Hs": 4096//4, "alpha": alpha, "fs": 22050}
     cfg_hps_solo = {"N": 1024, "M" : 17}
     cfg_hps = [cfg_ola, cfg_pv, cfg_hps_solo]
@@ -78,9 +76,7 @@ def main(file_path, alpha, type):
         yl = apply_algo(xl, type, cfg)
         yr = apply_algo(xr, type, cfg)
 
-        #Checkear que formato es el que va
         y = np.array([yl, yr])  #Channels, then audio
-        y = np.reshape(y, (y.shape[1], 2))  #Audio, then channels
     else:
         x, _ = read_wav(file_path, FS)
         y = apply_algo(x, type, cfg_ola, cfg_pv, cfg_hps)

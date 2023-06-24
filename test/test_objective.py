@@ -1,10 +1,10 @@
 import numpy as np
 
 from main import apply_algo 
-from utils.wav_utils import read_wav, save_wav
+from utils.wav_utils import save_wav
 from test import plotting
 from test import signals 
-
+from hps import hps
 
 def match_sizes(x1, x2):
     if len(x1) > len(x2):

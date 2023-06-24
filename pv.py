@@ -1,6 +1,5 @@
 import numpy as np
 from librosa import stft, istft
-import matplotlib.pyplot as plt
 
 def TSM_PV(x, fs, N, alpha, Hs):
     """Alpies TSM procedure base on phase vocoder.

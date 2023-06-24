@@ -1,7 +1,4 @@
-
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.signal import stft 
 from scipy.signal import medfilt as mediann
 from librosa import stft, istft
 
@@ -52,6 +49,3 @@ def hps(x, N, M):
     xh = np.concatenate((xh, np.zeros(l)))
   
     return xp, xh
-
-
-
