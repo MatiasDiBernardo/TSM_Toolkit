@@ -5,6 +5,7 @@ from utils.wav_utils import read_wav, save_wav
 from test import plotting
 from test import signals 
 
+
 def match_sizes(x1, x2):
     if len(x1) > len(x2):
         return x1[:len(x2)], x2
@@ -147,5 +148,24 @@ def obj_test():
     print("Dif ideal: ", dif)
     print("Dif gain: ", gain)
 
+def hps_similarity_test(xp,xh,plot, N, M, fs):
+    """Measure the similarity between pure aromonic and percuse signal imput and the hps output.
 
-        
+    Args:
+        xp(np.array): Percusive signal.
+        x_ideal (np.array): Harmonic signal. 
+        plot (boolean): Option to display the result in a graph.
+        audio_save (boolean): Option to save the audios in the audio directory.
+        N (int): STFT lenght.
+        N (int): Median filter lenght (must be od)
+        fs (int): Sample rate.
+    Returns:
+        Percusive_Similarity (float): Normalize value from 0 to 1 with the effectiveness of the algorithm.  
+        Harmonic_Similarity (float): Normalize value from 0 to 1 with the effectiveness of the algorithm.       
+    """
+    x = xp + xh
+    yp, yh = hps(x,N,M)
+    h_similarity = np.sum(np.abs(xp - yp))/len(yp)
+    p_similarity = np.sum(np.abs(xh - yh))/len(yh)
+    harmonic_max_sim = np.abs(np.max(xh) - np.max(yh))/np.max(xh)
+    return h_similarity, p_similarity, harmonic_max_sim
