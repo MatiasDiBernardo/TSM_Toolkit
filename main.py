@@ -47,7 +47,7 @@ def define_cfg(type, cfg_ola, cfg_pv, cfg_hps_solo, cfg_hps):
 
 def main(file_path, alpha, type):
     """Main function that contains all the functionality in this repository to
-    perform time-scale-modifications. With the predefine setting that work well
+    perform time-scale-modifications. With the predefine setting that works well
     for each algorithm.
     Algo types: "OLA" : Overlapp-add
                 "PV" : Phase Vocoder
@@ -78,7 +78,7 @@ def main(file_path, alpha, type):
 
         y = np.array([yl, yr])  #Channels, then audio
     else:
-        x, _ = read_wav(file_path, FS)
-        y = apply_algo(x, type, cfg_ola, cfg_pv, cfg_hps)
+        x, _ = read_wav(file_path, FS, mono=True)
+        y = apply_algo(x, type, cfg)
     
     return y
