@@ -21,32 +21,13 @@ def simple_sine(f0, fs, alpha, time = 1):
         (np.array): Base case cosine function.
         (np.array): Modify cosine function
     """
-    t_base = np.linspace(0, time, int(fs*time))
+    t_base = np.linspace(0, time, int(fs*time)) 
     t_ideal = np.linspace(0, time * alpha, int(fs*alpha*time))
     signal_base = np.cos(2*np.pi*f0*t_base)
     signal_ideal = np.cos(2*np.pi*f0*t_ideal)
 
     return signal_base, signal_ideal
 
-def simple_impulse(fs, alpha, time = 1):
-    """Generates a base impulse signal and a modifed signal
-    according to the stretching factor. duty cycle =.5
-
-    Args:
-        fs (int): Sample rate
-        alpha (float): Stretching factor.
-        time (float): Time of the signal in seconds. Default=1.
-    Return:
-        (np.array): Base case cosine function.
-        (np.array): Modify cosine function
-    """
-    t_base = np.linspace(0, time, int(fs*time))
-    t_ideal = np.linspace(0, time * alpha, int(fs*alpha*time))
-
-    signal_base = np.abs(signal.square(2*np.pi*5000*t_base, duty=0.25))
-    signal_ideal = np.abs(signal.square(2*np.pi*5000*t_ideal, duty=0.25))
-
-    return signal_base, signal_ideal
 
 def fast_changes(f1, f2, fs, fluctuation_time, alpha, time=1):
     """Generates signal with fast frequency changes in the time domain.
