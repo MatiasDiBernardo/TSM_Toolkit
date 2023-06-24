@@ -41,7 +41,6 @@ def TSM_OLA(x, N, alpha, Hs):
         #compute output signal by windowing x_m and normalizing
         #and overlapping according to Hs
         y[m * Hs: N + (m * Hs)] += (x_m*w)/(w_norm)
-        #y[m * Hs: N + (m * Hs)] += (x_m * w[:len(x_m)]) / w_norm[:len(x_m)] #chatGPT
                 
     return y 
 

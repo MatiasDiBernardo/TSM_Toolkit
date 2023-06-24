@@ -70,7 +70,6 @@ def TSM_PV_FL(x, fs, N, alpha, Hs):
     k = np.arange(N / 2 + 1)  #Stft uses only postive side
     omega = k * fs/N  #From 0 fs/2
 
-    phase_prop = 2 * np.pi * np.random.rand(X[:, 0].size)  # initialize synthesis phases
     for i in range(1, X.shape[1]):
 
         #Find peaks on magnitude spectrum
@@ -87,9 +86,6 @@ def TSM_PV_FL(x, fs, N, alpha, Hs):
         IF_w = phase_locking(omega, phi_error, peaks, delta_t)
 
         phi_mod = np.angle(Y[:, i - 1]) + (IF_w * Hs/fs)
-
-        #Phase prop, otra opción que funca bien pero con Hs/6 no funca
-        phase_prop += (np.pi * (omega + np.abs(X[:,i]))/fs) * Ha
 
         Y[:, i] = np.abs(X[:, i]) * np.exp(1j * 2*np.pi * phi_mod) 
 

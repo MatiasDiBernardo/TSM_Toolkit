@@ -76,10 +76,3 @@ def TSM_PV(x, fs, N, alpha, Ha):
     y = istft(Y, hop_length=Hs, win_length=N, n_fft=N, window=win_type)
     
     return y, phi_mod
-
-
-
-
-#x,fs = sf.read('B_MCA_tonal.wav')
-#y,phi_mod = TSM_PV(x,fs,8192,1.5,1024)
-#sf.write('TSM_test_orig.wav',y/np.max(y),samplerate=fs)

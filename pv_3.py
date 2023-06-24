@@ -89,23 +89,3 @@ def TSM_PV(x, fs, N, alpha, Hs):
         y[m * Hs: N + (m * Hs)] += (Xm_mod*w)/(w_norm**2) #Supuestamente es dividir w_norm**2 pero no queda
         
     return y
-
-def quick_test(path, N, alpha, Hs):
-    fs = 22050
-    x, _ = read_wav(path, fs)
-    rta = TSM_PV(x, fs, N, alpha, Hs)
-
-    save_wav(rta, fs, "data\\quick_test3.wav")
-
-"""
-Si uso fs igual 22050 y una ventana de 2048 tengo una longitud de
-93ms. 
-"""
-
-test_audio = "data\SingingVoice_ORIG.wav" 
-#test_audio = "data\\audio_003.wav" 
-N = 2048
-Hs = N//4
-alpha = 0.5
-
-#quick_test(test_audio, N, alpha, Hs)

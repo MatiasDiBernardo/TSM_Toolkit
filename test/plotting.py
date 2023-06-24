@@ -6,7 +6,7 @@ def basic_plot(x1, ax, fs, index, titles):
     ax[index].set_title(titles[index])
     ax[index].plot(t1, x1)
     ax[index].set_ylabel("Amplitude")
-    #ax[index].set_xlabel("Time")
+    ax[index].set_xlabel("Time")
 
 def compare_results(fs, titles, *x):
     """Compare signals graphicaly in a plot.
@@ -21,7 +21,7 @@ def compare_results(fs, titles, *x):
     for i in range(len(x)):
         basic_plot(x[i], ax, fs, i, titles)
     
-    fig.tight_layout() # Or equivalently,  "plt.tight_layout()"
+    fig.tight_layout()
     fig.subplots_adjust(hspace=1)
 
     plt.show()

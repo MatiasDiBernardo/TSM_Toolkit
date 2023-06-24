@@ -9,7 +9,7 @@ import pv_pl
 import tsm_hps
 import hps
 
-FS = 22050  #No se si conviene dejarlo así o no
+FS = 22050  #Fix value for testing
 
 def apply_algo(x, type, cfg):
     if type == "OLA":
